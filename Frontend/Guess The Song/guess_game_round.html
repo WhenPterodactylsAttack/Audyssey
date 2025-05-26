@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Guess The Song - Game Round - Audyssey</title>
+        <link rel="stylesheet" href="../styles/css/styles.css" />
+        <link rel="stylesheet" href="../styles/css/guess-game.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        />
+        <script src="guess_game_script.js" defer></script>
+    </head>
+    <body>
+        <div class="app-container">
+            <nav class="nav-bar">
+                <div class="logo" onclick="window.location.href='../welcome.html'">
+                    <img
+                        src="../assets/logo.svg"
+                        alt="Audyssey Logo"
+                        id="logo"
+                    />
+                    <h1>Audyssey</h1>
+                </div>
+                <div class="game-info">
+                    <div class="score">
+                        Score: <span id="current-score">0</span>
+                    </div>
+                    <div class="round">
+                        Round: <span id="current-round">1</span>/10
+                    </div>
+                </div>
+            </nav>
+
+            <main class="game-round-container">
+                <div class="game-round">
+                    <div class="music-player">
+                        <div class="music-visualization">
+                            <div class="music-wave">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                        <div class="music-controls">
+                            <button id="play-button" class="btn-play">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <div class="timer" id="timer">10</div>
+                        </div>
+                    </div>
+
+                    <div class="guess-container">
+                        <form id="guess-form">
+                            <div class="form-group">
+                                <label for="song-title">Song Title:</label>
+                                <input
+                                    type="text"
+                                    id="song-title"
+                                    placeholder="Enter song title..."
+                                    autocomplete="off"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="song-artist"
+                                    >Artist (Optional):</label
+                                >
+                                <input
+                                    type="text"
+                                    id="song-artist"
+                                    placeholder="Enter artist name..."
+                                    autocomplete="off"
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                class="btn btn-primary btn-large"
+                                id="submit-button"
+                            >
+                                Submit Guess
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="feedback-container" id="feedback-container">
+                        <!-- Feedback here -->
+                    </div>
+                </div>
+
+                <div class="game-actions">
+                    <a href="guess_game_intro.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Instructions
+                    </a>
+
+                    <a href="../games.html" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Quit Game
+                    </a>
+
+                    <button id="next-song" class="btn btn-primary">
+                        <i class="fas fa-forward"></i> Next Song
+                    </button>
+                </div>
+
+                <!-- Finish -->
+                <div id="finish-modal" class="game-finish-modal">
+                    <div class="modal-content">
+                        <h2>Game Finished!</h2>
+                        <div class="final-score">
+                            <p>
+                                Your final score:
+                                <span id="final-score">0</span>/20
+                            </p>
+                        </div>
+                        <div class="score-breakdown">
+                            <p>
+                                Song titles: <span id="title-score">0</span>/10
+                            </p>
+                            <p>Artists: <span id="artist-score">0</span>/10</p>
+                        </div>
+                        <div class="modal-actions">
+                            <button id="play-again" class="btn btn-secondary">
+                                Play Again
+                            </button>
+                            <a href="../games.html" class="btn btn-primary"
+                                >Games</a
+                            >
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer>
+                <div class="footer-content">
+                    <div class="footer-logo">
+                        <h3>Audyssey</h3>
+                        <p>The ultimate music gaming experience!!!</p>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Links</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-social">
+                        <h4>Connect With Us</h4>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-facebook"></i
+                            ></a>
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-twitter"></i
+                            ></a>
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-instagram"></i
+                            ></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Audyssey. All rights reserved.</p>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>

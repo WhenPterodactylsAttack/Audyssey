@@ -1,0 +1,467 @@
+@import "globals";
+@import "animations";
+
+// Jeopardy specific styling
+
+// Game intro page styling (similar to guess-game)
+.game-intro-container {
+    padding: $spacing-xxl 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.game-intro {
+    @include card;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+
+    .game-header {
+        margin-bottom: $spacing-xl;
+
+        h1 {
+            color: $accent-color;
+            font-size: 2.5rem;
+            margin-bottom: $spacing-base;
+        }
+
+        .game-icon.large {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            @include flex-center;
+            background-color: rgba($primary-color, 0.2);
+            border-radius: 50%;
+
+            i {
+                font-size: 3rem;
+                color: $primary-color;
+            }
+        }
+    }
+
+    .instructions-container {
+        margin-bottom: $spacing-xl;
+
+        h2 {
+            margin-bottom: $spacing-lg;
+            color: $accent-color;
+            font-size: 2rem;
+        }
+
+        h3 {
+            color: $primary-color;
+            font-size: 1.5rem;
+            margin-bottom: $spacing-md;
+        }
+
+        .instructions {
+            display: flex;
+            flex-direction: column;
+            gap: $spacing-lg;
+            margin-bottom: $spacing-xl;
+
+            .instruction-step {
+                display: flex;
+                align-items: center;
+                gap: $spacing-md;
+
+                .step-number {
+                    width: 40px;
+                    height: 40px;
+                    @include flex-center;
+                    background-color: $primary-color;
+                    color: $accent-color;
+                    border-radius: 50%;
+                    font-size: 1.2rem;
+                    font-weight: bold;
+                }
+
+                p {
+                    font-size: 1.2rem;
+                    text-align: left;
+                }
+            }
+        }
+
+        .scoring-info,
+        .tips {
+            margin-bottom: $spacing-lg;
+            text-align: left;
+            max-width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+
+            ul {
+                list-style: none;
+                padding: 0;
+                margin-top: $spacing-sm;
+
+                li {
+                    margin-bottom: $spacing-sm;
+                    position: relative;
+                    padding-left: $spacing-md;
+                    line-height: 1.5;
+
+                    &:before {
+                        content: "•";
+                        color: $primary-color;
+                        font-size: 1.2rem;
+                        position: absolute;
+                        left: 0;
+                    }
+
+                    .highlight {
+                        color: $primary-color;
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+    }
+
+    .game-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: $spacing-md;
+
+        .btn-large {
+            padding: $spacing-md $spacing-xxl;
+            font-size: 1.2rem;
+        }
+    }
+}
+
+// Jeopardy board styling
+.jeopardy-board-container {
+    padding: $spacing-lg 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.jeopardy-board {
+    @include card;
+    padding: $spacing-lg;
+    margin: $spacing-lg auto;
+
+    .jeopardy-categories {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: $spacing-sm;
+        margin-bottom: $spacing-sm;
+
+        .category-header {
+            background-color: $card-bg-color;//darken($primary-color, 10%);
+            color: $accent-color;
+            padding: $spacing-md;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-radius: $border-radius;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+        }
+    }
+
+    .jeopardy-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        gap: $spacing-sm;
+
+        .jeopardy-tile {
+            background-color: $primary-color;
+            height: 100px;
+            @include flex-center;
+            color: $accent-color;
+            font-weight: bold;
+            font-size: 2rem;
+            border-radius: $border-radius;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+
+            &:hover {
+                transform: scale(1.03);
+                background-color: lighten($primary-color, 5%);
+            }
+
+            &.answered {
+                background-color: lighten($secondary-color, 20%);
+                color: darken($accent-color, 40%);
+                cursor: not-allowed;
+            }
+        }
+    }
+}
+
+// Modal styling
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+
+    &.show {
+        display: flex;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .modal-content {
+        background-color: $modal-bg-color;
+        border-radius: $border-radius;
+        width: 90%;
+        max-width: 700px;
+        padding: $spacing-lg;
+        box-shadow: $box-shadow;
+        animation: slideInUp 0.4s ease-out;
+
+        .modal-header {
+            @include flex-between;
+            margin-bottom: $spacing-lg;
+            padding-bottom: $spacing-sm;
+            border-bottom: 1px solid rgba($accent-color, 0.1);
+            
+            h2 {
+                color: $primary-color;
+            }
+            
+            #modal-value {
+                font-weight: bold;
+                font-size: 1.5rem;
+                color: $accent-color;
+            }
+        }
+
+        .modal-body {
+            .question-container {
+                margin-bottom: $spacing-lg;
+                
+                p {
+                    font-size: 1.5rem;
+                    line-height: 1.5;
+                }
+            }
+
+            .timer-container {
+                margin-bottom: $spacing-lg;
+                position: relative;
+                
+                .timer-bar {
+                    height: 8px;
+                    background-color: $primary-color;
+                    width: 100%;
+                    border-radius: 4px;
+                    transition: width 10s linear;
+                }
+                
+                #timer-count {
+                    position: absolute;
+                    right: 0;
+                    top: -20px;
+                    font-size: 1.2rem;
+                    font-weight: bold;
+                }
+            }
+
+            .answer-container {
+                form {
+                    display: flex;
+                    gap: $spacing-md;
+                    
+                    input {
+                        flex: 1;
+                        padding: $spacing-md;
+                        border-radius: $border-radius;
+                        border: none;
+                        font-size: 1.2rem;
+                        background-color: lighten($modal-bg-color, 10%);
+                        color: $accent-color;
+                        
+                        &:focus {
+                            outline: 2px solid $primary-color;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Feedback styling
+.feedback-container {
+    margin-bottom: $spacing-lg;
+    
+    .feedback {
+        padding: $spacing-lg;
+        border-radius: $border-radius;
+        text-align: center;
+        
+        h3 {
+            font-size: 1.8rem;
+            margin-bottom: $spacing-md;
+        }
+        
+        p {
+            margin-bottom: $spacing-sm;
+            font-size: 1.2rem;
+        }
+        
+        .score-change {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: $spacing-md;
+        }
+        
+        &.correct {
+            background-color: rgba($success-color, 0.2);
+            border: 1px solid $success-color;
+            
+            h3 {
+                color: $success-color;
+            }
+            
+            .score-change {
+                color: $success-color;
+            }
+        }
+        
+        &.incorrect {
+            background-color: rgba($error-color, 0.2);
+            border: 1px solid $error-color;
+            
+            h3 {
+                color: $error-color;
+            }
+            
+            .score-change {
+                color: $error-color;
+            }
+        }
+    }
+}
+
+#game-over-modal {
+    .modal-content {
+        text-align: center;
+        
+        h2 {
+            color: $primary-color;
+            font-size: 2.5rem;
+            margin-bottom: $spacing-lg;
+        }
+        
+        .game-summary {
+            margin-bottom: $spacing-xl;
+            
+            p {
+                font-size: 1.5rem;
+                margin-bottom: $spacing-md;
+            }
+            
+            #final-score {
+                font-weight: bold;
+                color: $primary-color;
+            }
+            
+            #performance-message {
+                font-style: italic;
+            }
+        }
+        
+        .game-over-actions {
+            display: flex;
+            justify-content: center;
+            gap: $spacing-lg;
+        }
+    }
+}
+
+@media (max-width: $breakpoint-large) {
+    .jeopardy-board {
+        .jeopardy-categories {
+            .category-header {
+                font-size: 1rem;
+                height: 60px;
+            }
+        }
+        
+        .jeopardy-grid {
+            .jeopardy-tile {
+                height: 80px;
+                font-size: 1.5rem;
+            }
+        }
+    }
+    
+    .modal .modal-content .modal-body .question-container p {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: $breakpoint-medium) {
+    .jeopardy-board {
+        padding: $spacing-md;
+        
+        .jeopardy-categories {
+            .category-header {
+                font-size: 0.9rem;
+                height: 50px;
+                padding: $spacing-sm;
+            }
+        }
+        
+        .jeopardy-grid {
+            .jeopardy-tile {
+                height: 70px;
+                font-size: 1.3rem;
+            }
+        }
+    }
+    
+    .modal .modal-content {
+        padding: $spacing-md;
+        
+        .modal-body .answer-container form {
+            flex-direction: column;
+        }
+    }
+}
+
+@media (max-width: $breakpoint-small) {
+    .jeopardy-board {
+        .jeopardy-categories {
+            .category-header {
+                font-size: 0.7rem;
+                height: 40px;
+                padding: $spacing-xs;
+            }
+        }
+        
+        .jeopardy-grid {
+            .jeopardy-tile {
+                height: 60px;
+                font-size: 1.1rem;
+            }
+        }
+    }
+}
+
+.game-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#continue-btn {
+    width: 100%;
+}

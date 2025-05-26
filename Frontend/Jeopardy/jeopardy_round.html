@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Jeopardy - Game Round - Audyssey</title>
+        <link rel="stylesheet" href="../styles/css/styles.css" />
+        <link rel="stylesheet" href="../styles/css/jeopardy.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        />
+        <script src="jeopardy_script.js" defer></script>
+    </head>
+    <body>
+        <div class="app-container">
+            <nav class="nav-bar">
+                <div class="logo" onclick="window.location.href='../welcome.html'">
+                    <img
+                        src="../assets/logo.svg"
+                        alt="Audyssey Logo"
+                        id="logo"
+                    />
+                    <h1>Audyssey</h1>
+                </div>
+                <div class="game-info">
+                    <div class="score">
+                        Score: <span id="current-score">0</span>
+                    </div>
+                    <div class="questions-remaining">
+                        Questions: <span id="questions-remaining">25</span> remaining
+                    </div>
+                </div>
+            </nav>
+
+            <main class="jeopardy-board-container">
+                <!-- Game Board -->
+                <div class="jeopardy-board" id="jeopardy-board">
+                    <!-- Category Headers -->
+                    <div class="jeopardy-categories">
+                        <div class="category-header">2010s Hits</div>
+                        <div class="category-header">Rock Legends</div>
+                        <div class="category-header">Pop Culture</div>
+                        <div class="category-header">Music Theory</div>
+                        <div class="category-header">Music History</div>
+                    </div>
+                    
+                    <!-- Board Grid will be populated via JavaScript -->
+                    <div class="jeopardy-grid" id="jeopardy-grid">
+                        <!-- Grid tiles will be dynamically added here -->
+                    </div>
+                </div>
+
+                <div class="game-actions">
+                    <a href="jeopardy_intro.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Instructions
+                    </a>
+
+                    <a href="../games.html" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Quit Game
+                    </a>
+                </div>
+
+                <!-- Question Modal -->
+                <div class="modal" id="question-modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 id="modal-category">Category</h2>
+                            <span id="modal-value">Value</span>
+                        </div>
+                        <div class="modal-body">
+                            <div class="question-container">
+                                <p id="question-text">Question text appears here</p>
+                            </div>
+                            <div class="timer-container">
+                                <div class="timer-bar" id="timer-bar"></div>
+                                <span id="timer-count">10</span>
+                            </div>
+                            <div class="answer-container">
+                                <form id="answer-form">
+                                    <input
+                                        type="text"
+                                        id="answer-input"
+                                        placeholder="Your answer (as a question)"
+                                        autofocus
+                                    />
+                                    <button type="submit" class="btn btn-primary">
+                                        Submit
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback Modal -->
+                <div class="modal" id="feedback-modal">
+                    <div class="modal-content">
+                        <div class="feedback-container" id="feedback-container">
+                            <!-- Feedback content will be inserted here -->
+                        </div>
+                        <button id="continue-btn" class="btn btn-primary">
+                            Continue
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Game Over Modal -->
+                <div class="modal" id="game-over-modal">
+                    <div class="modal-content">
+                        <h2>Game Over!</h2>
+                        <div class="game-summary">
+                            <p>Final Score: <span id="final-score">0</span></p>
+                            <div id="performance-message"></div>
+                        </div>
+                        <div class="game-over-actions">
+                            <button id="play-again" class="btn btn-primary">
+                                Play Again
+                            </button>
+                            <a href="../games.html" class="btn btn-secondary">
+                                Back to Games
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer>
+                <div class="footer-content">
+                    <div class="footer-logo">
+                        <h3>Audyssey</h3>
+                        <p>The ultimate music gaming experience!!!</p>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Links</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-social">
+                        <h4>Connect With Us</h4>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-facebook"></i
+                            ></a>
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-twitter"></i
+                            ></a>
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-instagram"></i
+                            ></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Audyssey. All rights reserved.</p>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>
