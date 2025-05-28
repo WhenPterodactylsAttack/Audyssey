@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Top Tracks</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .song-card {
+            margin: 10px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: transform 0.2s;
+        }
+        .song-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .song-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .rank {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1DB954;
+            margin-right: 15px;
+        }
+        .song-info {
+            display: flex;
+            align-items: center;
+        }
+        .time-range-selector {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>My Top Tracks</h1>
+        <div class="time-range-selector">
+            <select id="timeRange" class="form-select" style="width: auto;">
+                <option value="short_term">Last 4 Weeks</option>
+                <option value="medium_term" selected>Last 6 Months</option>
+                <option value="long_term">All Time</option>
+            </select>
+        </div>
+        <div id="songs-container"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function getHashParams() {
+            var hashParams = {};
+            var e, r = /([^&;=]+)=?([^&;]*)/g,
+                q = window.location.hash.substring(1);
+            while (e = r.exec(q)) {
+                hashParams[e[1]] = decodeURIComponent(e[2]);
+            }
+            return hashParams;
+        }
+
+        function displaySongs(songs) {
+            const container = document.getElementById('songs-container');
+            container.innerHTML = ''; // Clear previous results
+
+            songs.forEach((song, index) => {
+                // Handle both saved tracks (song.track) and top tracks (song) data structures
+                const track = song.track || song;
+                const songCard = document.createElement('div');
+                songCard.className = 'song-card';
+                songCard.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-2">
+                            <img src="${track.album?.images?.[0]?.url || 'default-image.jpg'}" class="song-image" alt="${track.name}">
+                        </div>
+                        <div class="col-md-10">
+                            <div class="song-info">
+                                <span class="rank">#${index + 1}</span>
+                                <div>
+                                    <h3>${track.name}</h3>
+                                    <p>Artist: ${track.artists.map(artist => artist.name).join(', ')}</p>
+                                    <p>Album: ${track.album?.name || 'Unknown Album'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(songCard);
+            });
+        }
+
+        function loadTopTracks(timeRange) {
+            const params = getHashParams();
+            const access_token = params.access_token;
+
+            if (!access_token) {
+                fetch('/')
+                    .then(response => response.text())
+                    .then(html => {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+                        const tokenElement = tempDiv.querySelector('.text-overflow');
+                        if (tokenElement) {
+                            window.location.href = `search.html#access_token=${tokenElement.textContent}`;
+                        } else {
+                            window.location.href = '/';
+                        }
+                    })
+                    .catch(() => {
+                        window.location.href = '/';
+                    });
+            } else {
+                console.log('Fetching top tracks with token:', access_token);
+                fetch(`/top-tracks?access_token=${access_token}`)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json().then(data => {
+                        if (!response.ok) {
+                            console.error('Server response:', data);
+                            throw new Error(data.error?.details?.message || data.error || 'Failed to fetch top tracks');
+                        }
+                        return data;
+                    });
+                })
+                .then(data => {
+                    console.log('Top tracks data:', data);
+                    if (data.items) {
+                        displaySongs(data.items);
+                    } else {
+                        throw new Error('No tracks found in response');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('songs-container').innerHTML = `
+                        <div class="alert alert-danger" role="alert">
+                            <h4 class="alert-heading">Error loading songs</h4>
+                            <p>${error.message}</p>
+                            <hr>
+                            <p class="mb-0">Please try logging in again. If the problem persists, you may need to authorize the app to access your top tracks.</p>
+                        </div>`;
+                });
+            }
+        }
+
+        // Initial load
+        const params = getHashParams();
+        if (params.access_token) {
+            loadTopTracks('medium_term');
+        }
+
+        // Add event listener for time range changes
+        document.getElementById('timeRange').addEventListener('change', function(e) {
+            loadTopTracks(e.target.value);
+        });
+    </script>
+</body>
+</html> 
