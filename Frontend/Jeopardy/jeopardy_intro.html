@@ -1,0 +1,136 @@
+<!-- filepath: c:\Users\Nathan\workspace_code\Audyssey\Frontend\Jeopardy\jeopardy_intro.html -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Jeopardy - Audyssey</title>
+        <link rel="stylesheet" href="../styles/css/styles.css" />
+        <link rel="stylesheet" href="../styles/css/jeopardy.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        />
+    </head>
+    <body>
+        <div class="app-container">
+            <nav class="nav-bar">
+                <div class="logo" onclick="window.location.href='../welcome.html'">
+                    <img
+                        src="../assets/logo.svg"
+                        alt="Audyssey Logo"
+                        id="logo"
+                    />
+                    <h1>Audyssey</h1>
+                </div>
+                <div class="auth-buttons">
+                    <button class="btn btn-login">Log In</button>
+                    <button class="btn btn-primary">Sign Up</button>
+                </div>
+            </nav>
+
+            <main class="game-intro-container">
+                <div class="game-intro">
+                    <div class="game-header">
+                        <h1>Music Jeopardy</h1>
+                        <div class="game-icon large">
+                            <i class="fas fa-music"></i>
+                        </div>
+                    </div>
+
+                    <div class="instructions-container">
+                        <h2>How to Play</h2>
+                        <div class="instructions">
+                            <div class="instruction-step">
+                                <div class="step-number">1</div>
+                                <p>Select a category and point value (e.g., "2010s for 300")</p>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number">2</div>
+                                <p>A clue will be revealed - respond in the form of a question</p>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number">3</div>
+                                <p>You have 10 seconds to answer each question</p>
+                            </div>
+                        </div>
+
+                        <div class="scoring-info">
+                            <h3>Scoring</h3>
+                            <ul>
+                                <li>
+                                    <span class="highlight">Correct answer</span>: 
+                                    Gain points equal to the clue value
+                                </li>
+                                <li>
+                                    <span class="highlight">Incorrect answer</span>: 
+                                    Lose points equal to the clue value
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tips">
+                            <h3>Tips</h3>
+                            <ul>
+                                <li>
+                                    Always phrase answers as questions (e.g., "What is Bohemian Rhapsody?")
+                                </li>
+                                <li>Higher point values mean more difficult questions</li>
+                                <li>
+                                    Don't wait too long - the 10-second timer starts immediately!
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="game-actions">
+                        <a href="../games.html" class="btn btn-secondary">
+                            <i class="fas fa-gamepad"></i> Back to Games
+                        </a>
+                        <a href="../welcome.html" class="btn btn-secondary">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                        <a
+                            href="jeopardy_round.html"
+                            class="btn btn-primary"
+                        >
+                            <i class="fas fa-play"></i> Play Now
+                        </a>
+                    </div>
+                </div>
+            </main>
+
+            <footer>
+                <div class="footer-content">
+                    <div class="footer-logo">
+                        <h3>Audyssey</h3>
+                        <p>The ultimate music gaming experience!!!</p>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Links</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-social">
+                        <h4>Connect With Us</h4>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-facebook"></i
+                            ></a>
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-twitter"></i
+                            ></a>
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-instagram"></i
+                            ></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Audyssey. All rights reserved.</p>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>

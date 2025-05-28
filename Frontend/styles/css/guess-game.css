@@ -1,0 +1,621 @@
+/* Animations */
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes slideInUp {
+  from {
+    -webkit-transform: translateY(50px);
+            transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes slideInUp {
+  from {
+    -webkit-transform: translateY(50px);
+            transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    opacity: 1;
+  }
+}
+@-webkit-keyframes wave {
+  0%, 100% {
+    -webkit-transform: scaleY(0.3);
+            transform: scaleY(0.3);
+  }
+  50% {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+  }
+}
+@keyframes wave {
+  0%, 100% {
+    -webkit-transform: scaleY(0.3);
+            transform: scaleY(0.3);
+  }
+  50% {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+  }
+}
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.05);
+            transform: scale(1.05);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+@keyframes pulse {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.05);
+            transform: scale(1.05);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+.fade-in {
+  -webkit-animation: fadeIn 0.5s ease forwards;
+          animation: fadeIn 0.5s ease forwards;
+}
+
+.slide-in-up {
+  -webkit-animation: slideInUp 0.5s ease forwards;
+          animation: slideInUp 0.5s ease forwards;
+}
+
+.pulse {
+  -webkit-animation: pulse 1.5s infinite ease-in-out;
+          animation: pulse 1.5s infinite ease-in-out;
+}
+
+.spin {
+  -webkit-animation: spin 1s infinite linear;
+          animation: spin 1s infinite linear;
+}
+
+.game-intro-container {
+  padding: 60px 5%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.game-intro {
+  background-color: #282828;
+  border-radius: 8px;
+  padding: 20px;
+  -webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  -webkit-transition: -webkit-transform 0.3s ease, -webkit-box-shadow 0.3s ease;
+  transition: -webkit-transform 0.3s ease, -webkit-box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, -webkit-transform 0.3s ease, -webkit-box-shadow 0.3s ease;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.game-intro:hover {
+  -webkit-transform: translateY(-5px);
+          transform: translateY(-5px);
+  -webkit-box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+.game-intro .game-header {
+  margin-bottom: 40px;
+}
+.game-intro .game-header h1 {
+  color: #ffffff;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+.game-intro .game-header .game-icon.large {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: rgba(255, 107, 107, 0.2);
+  border-radius: 50%;
+}
+.game-intro .game-header .game-icon.large i {
+  font-size: 3rem;
+  color: #ff6b6b;
+}
+.game-intro .instructions-container {
+  margin-bottom: 40px;
+}
+.game-intro .instructions-container h2 {
+  margin-bottom: 30px;
+  color: #ffffff;
+  font-size: 2rem;
+}
+.game-intro .instructions-container h3 {
+  color: #ff6b6b;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+.game-intro .instructions-container .instructions {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  margin-bottom: 40px;
+}
+@media (max-width: 768px) {
+  .game-intro .instructions-container .instructions {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+  }
+}
+.game-intro .instructions-container .instructions .instruction-step {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  min-width: 200px;
+  max-width: 250px;
+  margin-bottom: 30px;
+}
+.game-intro .instructions-container .instructions .instruction-step .step-number {
+  width: 50px;
+  height: 50px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 0 auto 20px;
+  background-color: #ff6b6b;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #191414;
+}
+.game-intro .instructions-container .instructions .instruction-step p {
+  font-size: 1.1rem;
+}
+.game-intro .instructions-container .scoring-info,
+.game-intro .instructions-container .tips {
+  margin-bottom: 30px;
+}
+.game-intro .instructions-container .scoring-info ul,
+.game-intro .instructions-container .tips ul {
+  list-style: none;
+  padding: 0;
+}
+.game-intro .instructions-container .scoring-info ul li,
+.game-intro .instructions-container .tips ul li {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+.game-intro .instructions-container .scoring-info ul li .highlight,
+.game-intro .instructions-container .tips ul li .highlight {
+  color: #ff6b6b;
+  font-weight: 700;
+}
+.game-intro .game-actions {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  gap: 20px;
+}
+.game-intro .game-actions .btn {
+  min-width: 150px;
+}
+.game-intro .game-actions .btn i {
+  margin-right: 5px;
+}
+
+.game-round-container {
+  padding: 30px 5% 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.game-round {
+  background-color: #282828;
+  border-radius: 8px;
+  padding: 20px;
+  -webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  -webkit-transition: -webkit-transform 0.3s ease, -webkit-box-shadow 0.3s ease;
+  transition: -webkit-transform 0.3s ease, -webkit-box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, -webkit-transform 0.3s ease, -webkit-box-shadow 0.3s ease;
+  max-width: 800px;
+  margin: 0 auto 40px;
+}
+.game-round:hover {
+  -webkit-transform: translateY(-5px);
+          transform: translateY(-5px);
+  -webkit-box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+.game-round .music-player {
+  text-align: center;
+  padding: 30px 0;
+  margin-bottom: 30px;
+}
+.game-round .music-player .music-visualization {
+  height: 120px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 30px;
+}
+.game-round .music-player .music-visualization .music-wave {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 60px;
+}
+.game-round .music-player .music-visualization .music-wave span {
+  display: block;
+  width: 5px;
+  height: 20px;
+  margin: 0 3px;
+  border-radius: 5px;
+  background-color: rgba(255, 107, 107, 0.6);
+  -webkit-transition: height 0.3s ease;
+  transition: height 0.3s ease;
+}
+.game-round .music-player .music-visualization .music-wave span:nth-child(1), .game-round .music-player .music-visualization .music-wave span:nth-child(7) {
+  height: 15px;
+}
+.game-round .music-player .music-visualization .music-wave span:nth-child(2), .game-round .music-player .music-visualization .music-wave span:nth-child(6) {
+  height: 30px;
+}
+.game-round .music-player .music-visualization .music-wave span:nth-child(3), .game-round .music-player .music-visualization .music-wave span:nth-child(5) {
+  height: 45px;
+}
+.game-round .music-player .music-visualization .music-wave span:nth-child(4) {
+  height: 60px;
+}
+.game-round .music-player .music-visualization .music-wave.active span {
+  -webkit-animation: wave 1.2s infinite ease-in-out;
+          animation: wave 1.2s infinite ease-in-out;
+}
+.game-round .music-player .music-visualization .music-wave.active span:nth-child(1) {
+  -webkit-animation-delay: -1.2s;
+          animation-delay: -1.2s;
+}
+.game-round .music-player .music-visualization .music-wave.active span:nth-child(2) {
+  -webkit-animation-delay: -1s;
+          animation-delay: -1s;
+}
+.game-round .music-player .music-visualization .music-wave.active span:nth-child(3) {
+  -webkit-animation-delay: -0.8s;
+          animation-delay: -0.8s;
+}
+.game-round .music-player .music-visualization .music-wave.active span:nth-child(4) {
+  -webkit-animation-delay: -0.6s;
+          animation-delay: -0.6s;
+}
+.game-round .music-player .music-visualization .music-wave.active span:nth-child(5) {
+  -webkit-animation-delay: -0.4s;
+          animation-delay: -0.4s;
+}
+.game-round .music-player .music-visualization .music-wave.active span:nth-child(6) {
+  -webkit-animation-delay: -0.2s;
+          animation-delay: -0.2s;
+}
+.game-round .music-player .music-visualization .music-wave.active span:nth-child(7) {
+  -webkit-animation-delay: 0s;
+          animation-delay: 0s;
+}
+.game-round .music-player .music-controls {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 40px;
+}
+.game-round .music-player .music-controls .btn-play {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #ff6b6b;
+  border: none;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.game-round .music-player .music-controls .btn-play i {
+  color: #191414;
+  font-size: 1.5rem;
+}
+.game-round .music-player .music-controls .btn-play:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.game-round .music-player .music-controls .timer {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  width: 60px;
+  height: 60px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+.game-round .guess-container {
+  padding: 0 30px 30px;
+}
+.game-round .guess-container form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.game-round .guess-container .form-group {
+  width: 100%;
+  margin-bottom: 20px;
+}
+.game-round .guess-container .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+.game-round .guess-container .form-group input {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 1.1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: #ffffff;
+}
+.game-round .guess-container .form-group input:focus {
+  border-color: #ff6b6b;
+  outline: none;
+}
+.game-round .feedback-container {
+  padding: 20px;
+}
+.game-round .feedback-container .feedback {
+  padding: 20px;
+  border-radius: 5px;
+}
+.game-round .feedback-container .feedback h3 {
+  margin-bottom: 10px;
+}
+.game-round .feedback-container .feedback p {
+  margin-bottom: 5px;
+}
+.game-round .feedback-container .feedback.correct {
+  background-color: rgba(0, 128, 0, 0.2);
+  border: 1px solid rgba(0, 128, 0, 0.5);
+}
+.game-round .feedback-container .feedback.incorrect {
+  background-color: rgba(255, 0, 0, 0.2);
+  border: 1px solid rgba(255, 0, 0, 0.5);
+}
+
+.game-info {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 30px;
+}
+.game-info .score,
+.game-info .round {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.game-info .score span,
+.game-info .round span {
+  color: #ff6b6b;
+  font-weight: 700;
+}
+
+.game-actions {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  max-width: 800px;
+  margin: 0 auto;
+  gap: 20px;
+}
+.game-actions .btn {
+  min-width: 150px;
+}
+.game-actions .btn i {
+  margin-right: 5px;
+}
+.game-actions #next-song {
+  display: none;
+}
+
+.game-finish-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(25, 20, 20, 0.9);
+  z-index: 1000;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.game-finish-modal .modal-content {
+  background-color: #282828;
+  border-radius: 8px;
+  padding: 20px;
+  -webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  -webkit-transition: -webkit-transform 0.3s ease, -webkit-box-shadow 0.3s ease;
+  transition: -webkit-transform 0.3s ease, -webkit-box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, -webkit-transform 0.3s ease, -webkit-box-shadow 0.3s ease;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+}
+.game-finish-modal .modal-content:hover {
+  -webkit-transform: translateY(-5px);
+          transform: translateY(-5px);
+  -webkit-box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+.game-finish-modal .modal-content h2 {
+  color: #ffffff;
+  margin-bottom: 30px;
+  font-size: 2rem;
+}
+.game-finish-modal .modal-content .final-score {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+.game-finish-modal .modal-content .final-score span {
+  color: #ff6b6b;
+  font-weight: 700;
+}
+.game-finish-modal .modal-content .score-breakdown {
+  margin-bottom: 30px;
+}
+.game-finish-modal .modal-content .score-breakdown p {
+  margin-bottom: 5px;
+}
+.game-finish-modal .modal-content .score-breakdown p span {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+.game-finish-modal .modal-content .modal-actions {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  gap: 20px;
+}
+.game-finish-modal .modal-content .modal-actions .btn {
+  min-width: 120px;
+}
+
+#submit-button {
+  width: 100%;
+}/*# sourceMappingURL=guess-game.css.map */

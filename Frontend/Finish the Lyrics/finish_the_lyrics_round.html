@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Finish The Lyrics - Game Round - Audyssey</title>
+        <link rel="stylesheet" href="../styles/css/styles.css" />
+        <link rel="stylesheet" href="../styles/css/guess-game.css" />
+        <link rel="stylesheet" href="../styles/css/finish-lyrics.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        />
+        <script src="finish_the_lyrics_script.js" defer></script>
+    </head>
+    <body>
+        <div class="app-container">
+            <nav class="nav-bar">
+                <div class="logo" onclick="window.location.href='../welcome.html'">
+                    <img
+                        src="../assets/logo.svg"
+                        alt="Audyssey Logo"
+                        id="logo"
+                    />
+                    <h1>Audyssey</h1>
+                </div>
+                <div class="game-info">
+                    <div class="score">
+                        Score: <span id="current-score">0</span>
+                    </div>
+                    <div class="round">
+                        Round: <span id="current-round">1</span>/5
+                    </div>
+                </div>
+            </nav>
+
+            <main class="game-round-container">
+                <div class="game-round">
+                    <div class="song-info">
+                        <h2 id="song-title">Song Title Here</h2>
+                        <p id="song-artist">Artist Name</p>
+                    </div>
+
+                    <div class="lyrics-container">
+                        <div class="timer-container">
+                            <div class="timer" id="timer">10</div>
+                        </div>
+                        <div class="lyrics-display" id="lyrics-display">
+                            <p class="lyrics-text">
+                                <span class="lyrics-line"></span>
+                                <span class="lyrics-line"
+                                    ><span class="lyrics-blank"
+                                        >_____</span
+                                    ></span
+                                >
+                                <span class="lyrics-line"></span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="guess-container">
+                        <form id="guess-form">
+                            <div class="form-group">
+                                <label for="lyrics-guess">Your answer:</label>
+                                <input
+                                    type="text"
+                                    id="lyrics-guess"
+                                    placeholder="Type the missing word(s)..."
+                                    autocomplete="off"
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                class="btn btn-primary btn-large"
+                                id="submit-button"
+                            >
+                                Submit Answer
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="feedback-container" id="feedback-container">
+                        <!-- Feedback here -->
+                    </div>
+                </div>
+                <div class="game-actions">
+                    <a
+                        href="finish_the_lyrics_intro.html"
+                        class="btn btn-secondary"
+                    >
+                        <i class="fas fa-arrow-left"></i> Back to Instructions
+                    </a>
+
+                    <a href="../games.html" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Quit Game
+                    </a>
+
+                    <button id="next-lyric" class="btn btn-primary">
+                        <i class="fas fa-forward"></i> Next Lyric
+                    </button>
+                </div>
+                <!-- Finish -->
+                <div id="finish-modal" class="game-finish-modal">
+                    <div class="modal-content">
+                        <h2>Game Finished!</h2>
+                        <div class="final-score">
+                            <p>
+                                Your final score:
+                                <span id="final-score">0</span>/5
+                            </p>
+                        </div>
+                        <div class="score-breakdown">
+                            <p>
+                                Correct lyrics completed:
+                                <span id="correct-count">0</span>/5
+                            </p>
+                        </div>
+                        <div class="modal-actions">
+                            <button id="play-again" class="btn btn-secondary">
+                                Play Again
+                            </button>
+                            <a href="../games.html" class="btn btn-primary"
+                                >Games</a
+                            >
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer>
+                <div class="footer-content">
+                    <div class="footer-logo">
+                        <h3>Audyssey</h3>
+                        <p>The ultimate music gaming experience!!!</p>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Links</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-social">
+                        <h4>Connect With Us</h4>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-facebook"></i
+                            ></a>
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-twitter"></i
+                            ></a>
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-instagram"></i
+                            ></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Audyssey. All rights reserved.</p>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>

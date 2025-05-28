@@ -1,0 +1,229 @@
+@import "globals";
+@import "animations";
+
+.lyrics-container {
+    text-align: center;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+
+    .lyrics-display {
+        margin-bottom: $spacing-xl;
+        min-height: 150px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .lyrics-text {
+            font-size: 1.5rem;
+            line-height: 1.6;
+
+            .lyrics-line {
+                display: block;
+                margin-bottom: $spacing-sm;
+            }
+
+            .lyrics-blank {
+                display: inline-block;
+                min-width: 80px;
+                border-bottom: 2px dotted $primary-color;
+                padding: 0 $spacing-xs;
+                color: $primary-color;
+                font-weight: bold;
+                transition: all 0.3s ease;
+
+                &.correct-answer {
+                    color: darken(green, 1%);
+                    border-bottom: 2px solid darken(green, 1%);
+                    background-color: rgba(green, 0.1);
+                    animation: fadeIn 0.5s;
+                }
+
+                &.show-answer {
+                    color: darken(red, 10%);
+                    border-bottom: 2px solid darken(red, 10%);
+                    background-color: rgba(red, 0.1);
+                    animation: fadeIn 0.5s;
+                }
+            }
+        }
+    }
+
+    .timer-container {
+        margin-bottom: $spacing-lg;
+    }
+
+    .song-info {
+        text-align: center;
+        margin-bottom: $spacing-lg;
+        padding: $spacing-base;
+        border-radius: $spacing-xs;
+        background-color: rgba($accent-color, 0.1);
+
+        h2 {
+            color: $accent-color;
+            font-size: 1.8rem;
+            margin-bottom: $spacing-xs;
+        }
+
+        p {
+            color: $text-color;
+            font-size: 1.2rem;
+            font-style: italic;
+        }
+    }
+
+    // Timer Styling
+    .timer {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: $accent-color;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba($accent-color, 0.1);
+        border-radius: 50%;
+        margin: 0 auto;
+
+        &.pulse {
+            animation: pulse 1s infinite;
+            color: red;
+        }
+    }
+
+    // feedback Styling
+    .feedback-container {
+        padding: $spacing-base;
+
+        .feedback {
+            padding: $spacing-base;
+            border-radius: $spacing-xs;
+            animation: fadeIn 0.5s;
+
+            h3 {
+                margin-bottom: $spacing-sm;
+                font-size: 1.5rem;
+            }
+
+            p {
+                margin-bottom: $spacing-xs;
+                font-size: 1.1rem;
+            }
+
+            &.correct {
+                background-color: rgba(green, 0.2);
+                border: 1px solid rgba(green, 0.5);
+
+                h3 {
+                    color: darken(green, 10%);
+                }
+            }
+
+            &.incorrect {
+                background-color: rgba(red, 0.2);
+                border: 1px solid rgba(red, 0.5);
+
+                h3 {
+                    color: darken(red, 10%);
+                }
+            }
+        }
+    }
+
+    // Input Field Styling
+    .guess-container {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        padding: $spacing-base;
+
+        .form-group {
+            margin-bottom: $spacing-lg;
+
+            label {
+                display: block;
+                margin-bottom: $spacing-xs;
+                font-weight: 600;
+                font-size: 1.1rem;
+            }
+
+            input {
+                width: 100%;
+                padding: $spacing-base;
+                font-size: 1.2rem;
+                border: 2px solid rgba($primary-color, 0.3);
+                border-radius: $spacing-xs;
+                background-color: rgba($secondary-color, 0.05);
+                transition: all 0.3s ease;
+
+                &:focus {
+                    outline: none;
+                    border-color: $primary-color;
+                    box-shadow: 0 0 0 3px rgba($primary-color, 0.3);
+                }
+            }
+        }
+
+        button {
+            width: 100%;
+            padding: $spacing-base;
+            transition: all 0.2s ease;
+
+            &:hover {
+                transform: translateY(-2px);
+            }
+
+            &:active {
+                transform: translateY(0);
+            }
+        }
+    }
+
+    // Game Finish Modal
+    #finish-modal {
+        animation: fadeIn 0.5s;
+
+        .modal-content {
+            animation: slideInUp 0.5s;
+            max-width: 500px;
+
+            .final-score {
+                font-size: 2.2rem;
+                margin-bottom: $spacing-lg;
+
+                span {
+                    color: $primary-color;
+                    font-weight: 700;
+                    font-size: 2.5rem;
+                }
+            }
+
+            .score-breakdown {
+                margin-bottom: $spacing-lg;
+                font-size: 1.2rem;
+
+                p {
+                    margin-bottom: $spacing-xs;
+                }
+            }
+        }
+    }
+
+    // animations for highlighting correct answers
+    @keyframes highlight {
+        0% {
+            background-color: transparent;
+        }
+        50% {
+            background-color: rgba($primary-color, 0.3);
+        }
+        100% {
+            background-color: transparent;
+        }
+    }
+
+    .highlight {
+        animation: highlight 2s;
+    }
+}

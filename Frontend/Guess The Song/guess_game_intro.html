@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Guess The Song - Audyssey</title>
+        <link rel="stylesheet" href="../styles/css/styles.css" />
+        <link rel="stylesheet" href="../styles/css/guess-game.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        />
+    </head>
+    <body>
+        <div class="app-container">
+            <nav class="nav-bar">
+                <div class="logo" onclick="window.location.href='../welcome.html'">
+                    <img
+                        src="../assets/logo.svg"
+                        alt="Audyssey Logo"
+                        id="logo"
+                    />
+                    <h1>Audyssey</h1>
+                </div>
+                <div class="auth-buttons">
+                    <button class="btn btn-login">Log In</button>
+                    <button class="btn btn-primary">Sign Up</button>
+                </div>
+            </nav>
+
+            <main class="game-intro-container">
+                <div class="game-intro">
+                    <div class="game-header">
+                        <h1>Guess The Song</h1>
+                        <div class="game-icon large">
+                            <i class="fas fa-headphones"></i>
+                        </div>
+                    </div>
+
+                    <div class="instructions-container">
+                        <h2>How to Play</h2>
+                        <div class="instructions">
+                            <div class="instruction-step">
+                                <div class="step-number">1</div>
+                                <p>A song snippet (5–30 seconds) plays</p>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number">2</div>
+                                <p>You type your guess within 10 seconds</p>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number">3</div>
+                                <p>You receive immediate feedback</p>
+                            </div>
+                        </div>
+
+                        <div class="scoring-info">
+                            <h3>Scoring</h3>
+                            <ul>
+                                <li>
+                                    <span class="highlight">+1 point</span> for
+                                    correct title
+                                </li>
+                                <li>
+                                    <span class="highlight"
+                                        >+1 bonus point</span
+                                    >
+                                    for correct artist (optional)
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tips">
+                            <h3>Tips</h3>
+                            <ul>
+                                <li>
+                                    Listen carefully to vocal patterns and
+                                    instruments
+                                </li>
+                                <li>Focus on lyrics you can clearly hear</li>
+                                <li>
+                                    Song snippets may be from any part of the
+                                    song
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="game-actions">
+                        <a href="../games.html" class="btn btn-secondary">
+                            <i class="fas fa-gamepad"></i> Back to Games
+                        </a>
+                        <a href="../welcome.html" class="btn btn-secondary">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                        <a
+                            href="guess_game_round.html"
+                            class="btn btn-primary btn-large"
+                        >
+                            <i class="fas fa-play"></i> Play Now
+                        </a>
+                        <!-- <a href="#" class="btn btn-secondary">
+                        <i class="fas fa-user"></i> Account
+                    </a> -->
+                    </div>
+                </div>
+            </main>
+
+            <footer>
+                <div class="footer-content">
+                    <div class="footer-logo">
+                        <h3>Audyssey</h3>
+                        <p>The ultimate music gaming experience!!!</p>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Links</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-social">
+                        <h4>Connect With Us</h4>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-facebook"></i
+                            ></a>
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-twitter"></i
+                            ></a>
+                            <a href="#" class="social-icon"
+                                ><i class="fab fa-instagram"></i
+                            ></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Audyssey. All rights reserved.</p>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>

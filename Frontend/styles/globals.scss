@@ -1,0 +1,74 @@
+// SCSS Variables
+$primary-color: #ff6b6b; // or can use green like spotify: #1DB954
+$secondary-color: #191414; // black
+$accent-color: #ffffff; // White
+$background-color: #121212; // bg dark gray
+$text-color: #ffffff; // text
+$error-color: #e61e32; // errors
+$success-color: #1ed760; // success
+$card-bg-color: #282828; // lighter than background (cards)
+$modal-bg-color: #181818; // background forr modals (like auth)
+
+// Fonts (should be changed to whatever designer had in mind)
+$primary-font: "Montserrat", Helvetica, Arial, sans-serif;
+$heading-font: "Montserrat", Helvetica, Arial, sans-serif;
+
+// responsive (only partially implemented for now)
+$breakpoint-small: 576px;
+$breakpoint-medium: 768px;
+$breakpoint-large: 992px;
+$breakpoint-xlarge: 1200px;
+
+// other global variables
+$border-radius: 8px;
+$transition-speed: 0.3s;
+$box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+// spacing constants
+$spacing-xs: 5px;
+$spacing-sm: 10px;
+$spacing-md: 15px;
+$spacing-base: 20px;
+$spacing-lg: 30px;
+$spacing-xl: 40px;
+$spacing-xxl: 60px;
+$spacing-hero: 80px;
+
+// mixins (card, button, and flex basics)
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@mixin button-base {
+    display: inline-block;
+    padding: $spacing-sm $spacing-base;
+    border-radius: 30px;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    transition: all $transition-speed ease;
+    border: none;
+    outline: none;
+}
+
+@mixin card {
+    background-color: $card-bg-color;
+    border-radius: $border-radius;
+    padding: $spacing-base;
+    box-shadow: $box-shadow;
+    transition: transform $transition-speed ease,
+        box-shadow $transition-speed ease;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    }
+}

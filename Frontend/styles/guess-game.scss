@@ -1,0 +1,406 @@
+@import "globals";
+@import "animations";
+
+.game-intro-container {
+    padding: $spacing-xxl 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.game-intro {
+    @include card;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+
+    .game-header {
+        margin-bottom: $spacing-xl;
+
+        h1 {
+            color: $accent-color;
+            font-size: 2.5rem;
+            margin-bottom: $spacing-base;
+        }
+
+        .game-icon.large {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            @include flex-center;
+            background-color: rgba($primary-color, 0.2);
+            border-radius: 50%;
+
+            i {
+                font-size: 3rem;
+                color: $primary-color;
+            }
+        }
+    }
+
+    .instructions-container {
+        margin-bottom: $spacing-xl;
+
+        h2 {
+            margin-bottom: $spacing-lg;
+            color: $accent-color;
+            font-size: 2rem;
+        }
+
+        h3 {
+            color: $primary-color;
+            font-size: 1.5rem;
+            margin-bottom: $spacing-sm;
+        }
+
+        .instructions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-bottom: $spacing-xl;
+
+            @media (max-width: $breakpoint-medium) {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .instruction-step {
+                flex: 1;
+                min-width: 200px;
+                max-width: 250px;
+                margin-bottom: $spacing-lg;
+
+                .step-number {
+                    width: 50px;
+                    height: 50px;
+                    @include flex-center;
+                    margin: 0 auto $spacing-base;
+                    background-color: $primary-color;
+                    border-radius: 50%;
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    color: $secondary-color;
+                }
+
+                p {
+                    font-size: 1.1rem;
+                }
+            }
+        }
+
+        .scoring-info,
+        .tips {
+            margin-bottom: $spacing-lg;
+
+            ul {
+                list-style: none;
+                padding: 0;
+
+                li {
+                    margin-bottom: $spacing-sm;
+                    font-size: 1.1rem;
+
+                    .highlight {
+                        color: $primary-color;
+                        font-weight: 700;
+                    }
+                }
+            }
+        }
+    }
+
+    .game-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: $spacing-base;
+        .btn {
+            min-width: 150px;
+            i {
+                margin-right: $spacing-xs;
+            }
+        }
+    }
+}
+
+// round styling
+.game-round-container {
+    padding: $spacing-lg 5% $spacing-xxl;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.game-round {
+    @include card;
+    max-width: 800px;
+    margin: 0 auto $spacing-xl;
+
+    .music-player {
+        text-align: center;
+        padding: $spacing-lg 0;
+        margin-bottom: $spacing-lg;
+
+        .music-visualization {
+            height: 120px;
+            @include flex-center;
+            margin-bottom: $spacing-lg;
+
+            // inspiration from: https://cssdeck.com/labs/audio-wave
+            .music-wave {
+                display: flex;
+                align-items: center;
+                height: 60px;
+
+                span {
+                    display: block;
+                    width: 5px;
+                    height: 20px;
+                    margin: 0 3px;
+                    border-radius: $spacing-xs;
+                    background-color: rgba($primary-color, 0.6);
+                    transition: height 0.3s ease;
+
+                    &:nth-child(1),
+                    &:nth-child(7) {
+                        height: 15px;
+                    }
+                    &:nth-child(2),
+                    &:nth-child(6) {
+                        height: 30px;
+                    }
+                    &:nth-child(3),
+                    &:nth-child(5) {
+                        height: 45px;
+                    }
+                    &:nth-child(4) {
+                        height: 60px;
+                    }
+                }
+
+                &.active span {
+                    animation: wave 1.2s infinite ease-in-out;
+
+                    &:nth-child(1) {
+                        animation-delay: -1.2s;
+                    }
+                    &:nth-child(2) {
+                        animation-delay: -1s;
+                    }
+                    &:nth-child(3) {
+                        animation-delay: -0.8s;
+                    }
+                    &:nth-child(4) {
+                        animation-delay: -0.6s;
+                    }
+                    &:nth-child(5) {
+                        animation-delay: -0.4s;
+                    }
+                    &:nth-child(6) {
+                        animation-delay: -0.2s;
+                    }
+                    &:nth-child(7) {
+                        animation-delay: 0s;
+                    }
+                }
+            }
+        }
+
+        .music-controls {
+            @include flex-center;
+            gap: $spacing-xl;
+
+            .btn-play {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background-color: $primary-color;
+                border: none;
+                cursor: pointer;
+                @include flex-center;
+
+                i {
+                    color: $secondary-color;
+                    font-size: 1.5rem;
+                }
+
+                &:disabled {
+                    opacity: 0.7;
+                    cursor: not-allowed;
+                }
+            }
+
+            .timer {
+                font-size: 2rem;
+                font-weight: 700;
+                color: $accent-color;
+                width: 60px;
+                height: 60px;
+                @include flex-center;
+                background-color: rgba($accent-color, 0.1);
+                border-radius: 50%;
+            }
+        }
+    }
+    .guess-container {
+        padding: 0 $spacing-lg $spacing-lg;
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-group {
+            width: 100%;
+            margin-bottom: $spacing-base;
+
+            label {
+                display: block;
+                margin-bottom: $spacing-xs;
+                font-weight: 500;
+            }
+
+            input {
+                width: 100%;
+                padding: $spacing-sm $spacing-md;
+                font-size: 1.1rem;
+                background-color: rgba($accent-color, 0.1);
+                border: 1px solid transparent;
+                border-radius: $spacing-xs;
+                color: $text-color;
+
+                &:focus {
+                    border-color: $primary-color;
+                    outline: none;
+                }
+            }
+        }
+    }
+
+    .feedback-container {
+        padding: $spacing-base;
+
+        .feedback {
+            padding: $spacing-base;
+            border-radius: $spacing-xs;
+
+            h3 {
+                margin-bottom: $spacing-sm;
+            }
+
+            p {
+                margin-bottom: $spacing-xs;
+            }
+
+            &.correct {
+                background-color: rgba(green, 0.2);
+                border: 1px solid rgba(green, 0.5);
+            }
+
+            &.incorrect {
+                background-color: rgba(red, 0.2);
+                border: 1px solid rgba(red, 0.5);
+            }
+        }
+    }
+}
+
+.game-info {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+
+    .score,
+    .round {
+        font-size: 1.1rem;
+        font-weight: 600;
+
+        span {
+            color: $primary-color;
+            font-weight: 700;
+        }
+    }
+}
+
+.game-actions {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    max-width: 800px;
+    margin: 0 auto;
+    gap: $spacing-base;
+
+    .btn {
+        min-width: 150px;
+
+        i {
+            margin-right: $spacing-xs;
+        }
+    }
+
+    #next-song {
+        display: none;
+    }
+}
+
+.game-finish-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($secondary-color, 0.9);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+
+    .modal-content {
+        @include card;
+        width: 90%;
+        max-width: 500px;
+        text-align: center;
+
+        h2 {
+            color: $accent-color;
+            margin-bottom: $spacing-lg;
+            font-size: 2rem;
+        }
+
+        .final-score {
+            font-size: 1.5rem;
+            margin-bottom: $spacing-base;
+
+            span {
+                color: $primary-color;
+                font-weight: 700;
+            }
+        }
+
+        .score-breakdown {
+            margin-bottom: $spacing-lg;
+
+            p {
+                margin-bottom: $spacing-xs;
+
+                span {
+                    color: $primary-color;
+                    font-weight: 600;
+                }
+            }
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: $spacing-base;
+
+            .btn {
+                min-width: 120px;
+            }
+        }
+    }
+}
+
+#submit-button {
+    width: 100%;
+}
