@@ -37,9 +37,42 @@ var stateKey = 'spotify_auth_state';
 
 var app = express();
 
-app.use(express.static(__dirname + '/../Frontend'))
-   .use(cors())
-   .use(cookieParser());
+// Serve static files from Frontend directory and all its subdirectories
+app.use(express.static(__dirname + '/../Frontend', {
+    setHeaders: (res, path, stat) => {
+        // Set proper MIME types for different file types
+        if (path.endsWith('.js')) {
+            res.set('Content-Type', 'application/javascript');
+        } else if (path.endsWith('.css')) {
+            res.set('Content-Type', 'text/css');
+        }
+    }
+}))
+.use(cors())
+.use(cookieParser());
+
+// Add specific routes for game pages
+app.get('/guess-game-intro', function(req, res) {
+    res.sendFile(__dirname + '/../Frontend/Guess The Song/guess_game_intro.html');
+});
+
+app.get('/guess-game-round', function(req, res) {
+    res.sendFile(__dirname + '/../Frontend/Guess The Song/guess_game_round.html');
+});
+
+// Add routes for Finish the Lyrics game
+app.get('/finish-lyrics-intro', function(req, res) {
+    res.sendFile(__dirname + '/../Frontend/Finish the Lyrics/finish_the_lyrics_intro.html');
+});
+
+app.get('/finish-lyrics-round', function(req, res) {
+    res.sendFile(__dirname + '/../Frontend/Finish the Lyrics/finish_the_lyrics_round.html');
+});
+
+// Add a catch-all route for any other HTML files
+app.get('*.html', function(req, res, next) {
+    res.sendFile(__dirname + '/../Frontend' + req.path);
+});
 
 app.get('/login', function(req, res) {
 
@@ -47,7 +80,7 @@ app.get('/login', function(req, res) {
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = 'user-read-private user-read-email user-top-read user-library-read';
+  var scope = 'user-read-private user-read-email user-top-read user-library-read user-modify-playback-state user-read-playback-state streaming';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -187,7 +220,107 @@ app.get('/saved-tracks', function(req, res) {
   });
 });
 
+app.put('/play', function(req, res) {
+  const access_token = req.query.access_token;
+  const trackUri = req.query.trackUri;
+  const device_id = req.query.device_id;
 
+  console.log('Play request received:', {
+    trackUri,
+    device_id,
+    hasAccessToken: !!access_token
+  });
+
+  if (!access_token || !trackUri || !device_id) {
+    console.error('Missing required parameters:', {
+      hasAccessToken: !!access_token,
+      hasTrackUri: !!trackUri,
+      hasDeviceId: !!device_id
+    });
+    return res.status(400).json({ 
+      error: 'Missing required parameters',
+      details: {
+        access_token: !access_token,
+        trackUri: !trackUri,
+        device_id: !device_id
+      }
+    });
+  }
+
+  // First, transfer playback to our device
+  const transferOptions = {
+    url: 'https://api.spotify.com/v1/me/player',
+    method: 'PUT',
+    headers: { 
+      'Authorization': `Bearer ${access_token}`,
+      'Content-Type': 'application/json'
+    },
+    body: {
+      device_ids: [device_id],
+      play: false
+    },
+    json: true
+  };
+
+  console.log('Transferring playback to device:', device_id);
+
+  request.put(transferOptions, function(error, response, body) {
+    if (error) {
+      console.error("Error transferring playback:", error);
+      return res.status(500).json({ error: 'Error transferring playback', details: error.message });
+    }
+
+    if (response.statusCode !== 204) {
+      console.error("Transfer playback failed:", {
+        statusCode: response.statusCode,
+        body: body
+      });
+      return res.status(response.statusCode).json({ 
+        error: 'Error transferring playback', 
+        details: body 
+      });
+    }
+
+    console.log('Successfully transferred playback');
+
+    // Then start playback
+    const playOptions = {
+      url: `https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,
+      method: 'PUT',
+      headers: { 
+        'Authorization': `Bearer ${access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: {
+        uris: [trackUri]
+      },
+      json: true
+    };
+
+    console.log('Starting playback of track:', trackUri);
+
+    request.put(playOptions, function(error, response, body) {
+      if (error) {
+        console.error("Error playing track:", error);
+        return res.status(500).json({ error: 'Error playing track', details: error.message });
+      }
+
+      if (response.statusCode !== 204) {
+        console.error("Play track failed:", {
+          statusCode: response.statusCode,
+          body: body
+        });
+        return res.status(response.statusCode).json({ 
+          error: 'Error playing track', 
+          details: body 
+        });
+      }
+
+      console.log('Successfully started playback');
+      res.status(204).send();
+    });
+  });
+});
 
 app.get('/top-tracks', function(req, res) {
   const access_token = req.query.access_token;
