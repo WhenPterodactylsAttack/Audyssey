@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Games - Audyssey</title>
         <link rel="stylesheet" href="styles/css/styles.css" />
+        <script src="games.js"></script>
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -18,8 +19,10 @@
                     <h1>Audyssey</h1>
                 </div>
                 <div class="auth-buttons">
-                    <button class="btn btn-login">Log In</button>
-                    <button class="btn btn-primary">Sign Up</button>
+                    <p id="account"></p>
+                    <button class="btn btn-login" onclick="logout()">Logout</button>
+                    <img id="account-image"/>
+                    
                 </div>
             </nav>
 

@@ -710,3 +710,14 @@ footer .footer-bottom p {
   height: auto;
   margin-top: 60px;
 }/*# sourceMappingURL=styles.css.map */
+
+#account-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #ff6b6b;
+  object-fit: cover;
+  margin-left: 10px;
+  background: #222;
+  vertical-align: middle;
+}
