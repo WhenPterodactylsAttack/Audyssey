@@ -1,6 +1,9 @@
 /** THIS IS PLACEHOLDER LOGIC @backend people */
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Log the test data
+    console.log('Test Songs Data:', testSongs);
+    
     const playButton = document.getElementById('play-button');
     const timerDisplay = document.getElementById('timer');
     const guessForm = document.getElementById('guess-form');
@@ -10,6 +13,11 @@ document.addEventListener('DOMContentLoaded', function() {
     let timerInterval;
     let timeLeft = 10;
     let access_token = null;
+    let player;
+    let deviceId;
+    let currentPlayTimer = null;
+    let currentlyPlayingButton = null;
+    let isPlayerReady = false;
 
     function getHashParams() {
         var hashParams = {};
@@ -40,8 +48,12 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = '/login';
             return;
         }
-        loadTopTracks('medium_term');
         
+        // Test with hardcoded URI
+        const testUri = 'spotify:track:2dKkVF2m160z0RNDN2dddc';
+        playSong(testUri, playButton);
+        
+        // Original UI behavior
         playButton.disabled = true;
         playButton.querySelector('i').classList.remove('fa-play');
         playButton.querySelector('i').classList.add('fa-pause');
@@ -143,53 +155,147 @@ document.addEventListener('DOMContentLoaded', function() {
         playButton.querySelector('i').classList.add('fa-play');
     }
 
-
-
-    function loadTopTracks(timeRange) {
+    window.onSpotifyWebPlaybackSDKReady = () => {
         const params = getHashParams();
         const access_token = params.access_token;
 
-        if (!access_token) {
-            fetch('/')
-                .then(response => response.text())
-                .then(html => {
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = html;
-                    const tokenElement = tempDiv.querySelector('.text-overflow');
-                    if (tokenElement) {
-                        window.location.href = `search.html#access_token=${tokenElement.textContent}`;
-                    } else {
-                        window.location.href = '/';
-                    }
+        player = new Spotify.Player({
+            name: 'Audyssey Web Player',
+            getOAuthToken: cb => { cb(access_token); },
+            volume: 0.5
+        });
+
+        // Error handling
+        player.addListener('initialization_error', ({ message }) => { 
+            console.error('Initialization error:', message);
+            isPlayerReady = false;
+        });
+        player.addListener('authentication_error', ({ message }) => { 
+            console.error('Authentication error:', message);
+            isPlayerReady = false;
+        });
+        player.addListener('account_error', ({ message }) => { 
+            console.error('Account error:', message);
+            isPlayerReady = false;
+        });
+        player.addListener('playback_error', ({ message }) => { 
+            console.error('Playback error:', message);
+        });
+
+        // Playback status updates
+        player.addListener('player_state_changed', state => { 
+            console.log('Player state changed:', state);
+        });
+
+        // Ready
+        player.addListener('ready', ({ device_id }) => {
+            console.log('Ready with Device ID', device_id);
+            deviceId = device_id;
+            isPlayerReady = true;
+            // Activate this device
+            activateDevice(device_id, access_token);
+        });
+
+        // Not Ready
+        player.addListener('not_ready', ({ device_id }) => {
+            console.log('Device ID has gone offline', device_id);
+            isPlayerReady = false;
+        });
+
+        // Connect to the player!
+        player.connect();
+    };
+
+    async function activateDevice(deviceId, access_token) {
+        try {
+            const response = await fetch('https://api.spotify.com/v1/me/player', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    device_ids: [deviceId],
+                    play: false
                 })
-                .catch(() => {
-                    window.location.href = '/';
-                });
-        } else {
-            console.log('Fetching top tracks with token:', access_token);
-            fetch(`/top-tracks?access_token=${access_token}`)
-            .then(response => {
-                console.log('Response status:', response.status);
-                return response.json().then(data => {
-                    if (!response.ok) {
-                        console.error('Server response:', data);
-                        throw new Error(data.error?.details?.message || data.error || 'Failed to fetch top tracks');
-                    }
-                    return data;
-                });
-            })
-            .then(data => {
-                console.log('Top tracks data:', data);
-                if (data.items) {
-                    console.log(data.items);
-                } else {
-                    throw new Error('No tracks found in response');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
             });
+
+            if (!response.ok) {
+                throw new Error('Failed to activate device');
+            }
+            console.log('Device activated successfully');
+        } catch (error) {
+            console.error('Error activating device:', error);
         }
     }
+
+    async function playSong(trackUri, button) {
+        const params = getHashParams();
+        const access_token = params.access_token;
+
+        if (!isPlayerReady || !deviceId) {
+            alert('Player not ready yet. Please wait a moment and try again.');
+            return;
+        }
+
+        // If there's a currently playing song, stop it
+        if (currentPlayTimer) {
+            clearTimeout(currentPlayTimer);
+            if (currentlyPlayingButton) {
+                currentlyPlayingButton.disabled = false;
+                currentlyPlayingButton.textContent = 'Play';
+                currentlyPlayingButton.classList.remove('loading');
+            }
+        }
+
+        // Show loading state
+        button.disabled = true;
+        button.textContent = 'Loading...';
+        button.classList.add('loading');
+        currentlyPlayingButton = button;
+
+        try {
+            console.log('Attempting to play track:', trackUri);
+            console.log('Using device ID:', deviceId);
+            
+            // Call our backend endpoint with device ID
+            const response = await fetch(`/play?access_token=${access_token}&trackUri=${encodeURIComponent(trackUri)}&device_id=${deviceId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Server error response:', errorData);
+                throw new Error(errorData.error || errorData.details || 'Failed to play track');
+            }
+
+            // Update button to show playing state
+            button.textContent = 'Playing...';
+            button.classList.remove('loading');
+
+            // Set a timer to stop after 5 seconds
+            currentPlayTimer = setTimeout(async () => {
+                await player.pause();
+                button.disabled = false;
+                button.textContent = 'Play';
+                button.classList.remove('loading');
+                currentlyPlayingButton = null;
+            }, 10000);
+
+        } catch (error) {
+            console.error('Error playing song:', error);
+            button.disabled = false;
+            button.textContent = 'Play';
+            button.classList.remove('loading');
+            currentlyPlayingButton = null;
+            alert('Error playing song: ' + (error.message || 'Unknown error'));
+        }
+    }
+
+
+
 
 });
