@@ -88,6 +88,7 @@
                 <option value="medium_term" selected>Last 6 Months</option>
                 <option value="long_term">All Time</option>
             </select>
+            <button id="game-button" class="btn btn-primary">Go to Game Page</button>
         </div>
         <div id="songs-container"></div>
     </div>
@@ -99,6 +100,31 @@
         let currentPlayTimer = null;
         let currentlyPlayingButton = null;
         let isPlayerReady = false;
+
+        function getHashParams() {
+            var hashParams = {};
+            var e, r = /([^&;=]+)=?([^&;]*)/g,
+                q = window.location.hash.substring(1);
+            while (e = r.exec(q)) {
+                hashParams[e[1]] = decodeURIComponent(e[2]);
+            }
+            return hashParams;
+        }
+
+        // Add this function to handle navigation
+        function navigateToGuessGame() {
+            const params = getHashParams();
+            const access_token = params.access_token;
+            if (access_token) {
+                window.location.href = `/Guess The Song/guess_game_round.html#access_token=${access_token}`;
+            } else {
+                alert('Please log in first');
+                window.location.href = '/login';
+            }
+        }
+
+        // Add event listener for the game button
+        document.getElementById('game-button').addEventListener('click', navigateToGuessGame);
 
         window.onSpotifyWebPlaybackSDKReady = () => {
             const params = getHashParams();
@@ -150,16 +176,6 @@
             // Connect to the player!
             player.connect();
         };
-
-        function getHashParams() {
-            var hashParams = {};
-            var e, r = /([^&;=]+)=?([^&;]*)/g,
-                q = window.location.hash.substring(1);
-            while (e = r.exec(q)) {
-                hashParams[e[1]] = decodeURIComponent(e[2]);
-            }
-            return hashParams;
-        }
 
         function displaySongs(songs) {
             const container = document.getElementById('songs-container');
@@ -322,7 +338,7 @@
                     button.textContent = 'Play';
                     button.classList.remove('loading');
                     currentlyPlayingButton = null;
-                }, 5000);
+                }, 10000);
 
             } catch (error) {
                 console.error('Error playing song:', error);
@@ -346,4 +362,4 @@
         });
     </script>
 </body>
-</html> 
+</html>

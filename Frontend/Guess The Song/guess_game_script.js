@@ -9,10 +9,40 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let timerInterval;
     let timeLeft = 10;
+    let access_token = null;
+
+    function getHashParams() {
+        var hashParams = {};
+        var e, r = /([^&;=]+)=?([^&;]*)/g,
+            q = window.location.hash.substring(1);
+        while (e = r.exec(q)) {
+            hashParams[e[1]] = decodeURIComponent(e[2]);
+        }
+        console.log(hashParams);
+        return hashParams;
+    }
+
+    // Get access token when page loads
+    const params = getHashParams();
+    if (params.access_token) {
+        access_token = params.access_token;
+        console.log('Access token received:', access_token);
+    } else {
+        console.log('No access token found');
+        // Optionally redirect to login
+        // window.location.href = '/login';
+    }
     
     // playing a song (simulation for now, need to integrate with Spotify API)
     playButton.addEventListener('click', function() {
-        playButton.disabled = true; // can change to pause or something?
+        if (!access_token) {
+            alert('Please log in first');
+            window.location.href = '/login';
+            return;
+        }
+        loadTopTracks('medium_term');
+        
+        playButton.disabled = true;
         playButton.querySelector('i').classList.remove('fa-play');
         playButton.querySelector('i').classList.add('fa-pause');
         
@@ -112,4 +142,54 @@ document.addEventListener('DOMContentLoaded', function() {
         playButton.querySelector('i').classList.remove('fa-pause');
         playButton.querySelector('i').classList.add('fa-play');
     }
+
+
+
+    function loadTopTracks(timeRange) {
+        const params = getHashParams();
+        const access_token = params.access_token;
+
+        if (!access_token) {
+            fetch('/')
+                .then(response => response.text())
+                .then(html => {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = html;
+                    const tokenElement = tempDiv.querySelector('.text-overflow');
+                    if (tokenElement) {
+                        window.location.href = `search.html#access_token=${tokenElement.textContent}`;
+                    } else {
+                        window.location.href = '/';
+                    }
+                })
+                .catch(() => {
+                    window.location.href = '/';
+                });
+        } else {
+            console.log('Fetching top tracks with token:', access_token);
+            fetch(`/top-tracks?access_token=${access_token}`)
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json().then(data => {
+                    if (!response.ok) {
+                        console.error('Server response:', data);
+                        throw new Error(data.error?.details?.message || data.error || 'Failed to fetch top tracks');
+                    }
+                    return data;
+                });
+            })
+            .then(data => {
+                console.log('Top tracks data:', data);
+                if (data.items) {
+                    console.log(data.items);
+                } else {
+                    throw new Error('No tracks found in response');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    }
+
 });

@@ -13,6 +13,7 @@ var request = require('request'); // "Request" library
 var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
+const path = require('path');
 
 var client_id = process.env.SPOTIFY_CLIENT_ID;
 var client_secret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -38,14 +39,19 @@ var stateKey = 'spotify_auth_state';
 var app = express();
 
 // Serve static files from Frontend directory and all its subdirectories
-app.use(express.static(__dirname + '/../Frontend', {
+app.use(express.static(path.join(__dirname, '..', 'Frontend'), {
+    dotfiles: 'allow',
     setHeaders: (res, path, stat) => {
         // Set proper MIME types for different file types
         if (path.endsWith('.js')) {
-            res.set('Content-Type', 'application/javascript');
+            res.set('Content-Type', 'application/javascript; charset=UTF-8');
         } else if (path.endsWith('.css')) {
-            res.set('Content-Type', 'text/css');
+            res.set('Content-Type', 'text/css; charset=UTF-8');
+        } else if (path.endsWith('.html')) {
+            res.set('Content-Type', 'text/html; charset=UTF-8');
         }
+        // Add CORS headers
+        res.set('Access-Control-Allow-Origin', '*');
     }
 }))
 .use(cors())
@@ -53,25 +59,40 @@ app.use(express.static(__dirname + '/../Frontend', {
 
 // Add specific routes for game pages
 app.get('/guess-game-intro', function(req, res) {
-    res.sendFile(__dirname + '/../Frontend/Guess The Song/guess_game_intro.html');
+    res.sendFile(path.join(__dirname, '..', 'Frontend', 'Guess The Song', 'guess_game_intro.html'));
 });
 
 app.get('/guess-game-round', function(req, res) {
-    res.sendFile(__dirname + '/../Frontend/Guess The Song/guess_game_round.html');
+    res.sendFile(path.join(__dirname, '..', 'Frontend', 'Guess The Song', 'guess_game_round.html'));
 });
 
 // Add routes for Finish the Lyrics game
 app.get('/finish-lyrics-intro', function(req, res) {
-    res.sendFile(__dirname + '/../Frontend/Finish the Lyrics/finish_the_lyrics_intro.html');
+    res.sendFile(path.join(__dirname, '..', 'Frontend', 'Finish the Lyrics', 'finish_the_lyrics_intro.html'));
 });
 
 app.get('/finish-lyrics-round', function(req, res) {
-    res.sendFile(__dirname + '/../Frontend/Finish the Lyrics/finish_the_lyrics_round.html');
+    res.sendFile(path.join(__dirname, '..', 'Frontend', 'Finish the Lyrics', 'finish_the_lyrics_round.html'));
+});
+
+// Add routes for Jeopardy game
+app.get('/jeopardy-intro', function(req, res) {
+    res.sendFile(path.join(__dirname, '..', 'Frontend', 'Jeopardy', 'jeopardy_intro.html'));
+});
+
+app.get('/jeopardy-round', function(req, res) {
+    res.sendFile(path.join(__dirname, '..', 'Frontend', 'Jeopardy', 'jeopardy_round.html'));
 });
 
 // Add a catch-all route for any other HTML files
 app.get('*.html', function(req, res, next) {
-    res.sendFile(__dirname + '/../Frontend' + req.path);
+    const filePath = path.join(__dirname, '..', 'Frontend', req.path);
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('Error sending file:', err);
+            next(err);
+        }
+    });
 });
 
 app.get('/login', function(req, res) {
