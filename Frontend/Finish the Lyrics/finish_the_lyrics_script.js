@@ -230,3 +230,12 @@ document.addEventListener('DOMContentLoaded', () => {
         startGame();
     }
 });
+
+
+// Load user info from localStorage and set the account image
+document.addEventListener("DOMContentLoaded", function() {
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (userInfo && userInfo.picture) {
+        document.getElementById("account-image").src = userInfo.picture;
+    }
+});
