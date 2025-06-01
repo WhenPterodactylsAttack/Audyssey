@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const guessForm = document.getElementById('guess-form');
     const nextSongBtn = document.getElementById('next-song');
     const feedbackContainer = document.getElementById('feedback-container');
+    const musicWave = document.querySelector('.music-wave');
     
     let timerInterval;
     let timeLeft = 10;
@@ -18,6 +19,18 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentPlayTimer = null;
     let currentlyPlayingButton = null;
     let isPlayerReady = false;
+    let currentSongIndex = 0; // Track current song index
+
+    // Function to get current song
+    function getCurrentSong() {
+        return testSongs[currentSongIndex];
+    }
+
+    // Function to move to next song
+    function moveToNextSong() {
+        currentSongIndex = (currentSongIndex + 1) % testSongs.length;
+        return getCurrentSong();
+    }
 
     function getHashParams() {
         var hashParams = {};
@@ -41,39 +54,82 @@ document.addEventListener('DOMContentLoaded', function() {
         // window.location.href = '/login';
     }
     
+    // Function to update play button state
+    function updatePlayButtonState(isPlaying) {
+        if (playButton) {
+            playButton.disabled = isPlaying;
+            const icon = playButton.querySelector('i');
+            if (icon) {
+                icon.classList.remove(isPlaying ? 'fa-play' : 'fa-pause');
+                icon.classList.add(isPlaying ? 'fa-pause' : 'fa-play');
+            }
+            // Clear any text content
+            playButton.textContent = '';
+            // Re-add the icon
+            const newIcon = document.createElement('i');
+            newIcon.className = `fas ${isPlaying ? 'fa-pause' : 'fa-play'}`;
+            playButton.appendChild(newIcon);
+        }
+    }
+
+    // Function to update music wave state
+    function updateMusicWaveState(isActive) {
+        if (musicWave) {
+            if (isActive) {
+                musicWave.classList.add('active');
+            } else {
+                musicWave.classList.remove('active');
+            }
+        }
+    }
+
+    // Function to reset timer
+    function resetTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 10;
+        timerDisplay.textContent = timeLeft;
+    }
+
     // playing a song (simulation for now, need to integrate with Spotify API)
-    playButton.addEventListener('click', function() {
+    playButton.addEventListener('click', async function() {
         if (!access_token) {
             alert('Please log in first');
             window.location.href = '/login';
             return;
         }
         
-        // Test with hardcoded URI
-        const testUri = 'spotify:track:2dKkVF2m160z0RNDN2dddc';
-        playSong(testUri, playButton);
+        const currentSong = getCurrentSong();
+        const testUri = currentSong.track.uri;
         
-        // Original UI behavior
-        playButton.disabled = true;
-        playButton.querySelector('i').classList.remove('fa-play');
-        playButton.querySelector('i').classList.add('fa-pause');
+        // Reset timer and UI state
+        resetTimer();
+        updatePlayButtonState(true);
         
-        timeLeft = 10;
-        timerDisplay.textContent = timeLeft;
-        
-        // music wave animation
-        document.querySelector('.music-wave').classList.add('active');
-        
-        // countdown
-        timerInterval = setInterval(function() {
-            timeLeft--;
-            timerDisplay.textContent = timeLeft;
+        try {
+            // Start playing the song
+            await playSong(testUri, playButton);
             
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                timeUp();
-            }
-        }, 1000);
+            // music wave animation
+            updateMusicWaveState(true);
+            
+            // Start countdown after a short delay to ensure music has started
+            setTimeout(() => {
+                // countdown
+                timerInterval = setInterval(function() {
+                    timeLeft--;
+                    timerDisplay.textContent = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        timeUp();
+                    }
+                }, 1000);
+            }, 500); // Small delay to ensure music has started
+        } catch (error) {
+            // If song fails to play, reset UI
+            updatePlayButtonState(false);
+            alert('Error playing song: ' + error.message);
+        }
     });
     
     // Handle submit
@@ -81,39 +137,70 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         clearInterval(timerInterval);
         
-        const songTitle = document.getElementById('song-title').value.trim();
-        const songArtist = document.getElementById('song-artist').value.trim();
+        const songTitle = document.getElementById('song-title').value.trim().toLowerCase();
+        const songArtist = document.getElementById('song-artist').value.trim().toLowerCase();
+        const currentSong = getCurrentSong();
         
-        // change logic to check against actual data from spotify
+        // Get correct answers
+        const correctTitle = currentSong.track.name.toLowerCase();
+        const correctArtist = currentSong.track.artists[0].name.toLowerCase();
+        
+        // Check answers
+        const titleCorrect = songTitle === correctTitle;
+        const artistCorrect = songArtist === correctArtist;
+        
         let feedback = '';
-        if (songTitle) {
+        let pointsEarned = 0;
+        
+        if (titleCorrect || artistCorrect) {
+            // Build feedback message
             feedback = `
-                <div class="feedback correct">
-                    <h3>Correct!</h3>
-                    <p>Song title: "Sample Song Title"</p>
-                    <p>Artist: Sample Artist</p>
-                    <p>+1 point for the song title</p>
-                    ${songArtist ? '<p>+1 point for the artist</p>' : ''}
-                </div>
+                <div class="feedback ${titleCorrect && artistCorrect ? 'correct' : 'partial'}">
+                    <h3>${titleCorrect && artistCorrect ? 'Correct!' : 'Partially Correct!'}</h3>
+                    <p>Song title: "${currentSong.track.name}"</p>
+                    <p>Artist: ${currentSong.track.artists[0].name}</p>
             `;
             
-            // update score
-            const currentScore = parseInt(document.getElementById('current-score').textContent);
-            document.getElementById('current-score').textContent = currentScore + (songArtist ? 2 : 1);
+            // Add points feedback
+            if (titleCorrect) {
+                pointsEarned += 1;
+                feedback += '<p>+1 point for the song title</p>';
+            }
+            if (artistCorrect) {
+                pointsEarned += 1;
+                feedback += '<p>+1 point for the artist</p>';
+            }
+            
+            feedback += '</div>';
+        } else {
+            feedback = `
+                <div class="feedback incorrect">
+                    <h3>Incorrect!</h3>
+                    <p>The correct answer was:</p>
+                    <p>Song title: "${currentSong.track.name}"</p>
+                    <p>Artist: ${currentSong.track.artists[0].name}</p>
+                </div>
+            `;
         }
+        
+        // Update score
+        const currentScore = parseInt(document.getElementById('current-score').textContent);
+        document.getElementById('current-score').textContent = currentScore + pointsEarned;
         
         feedbackContainer.innerHTML = feedback;
         nextSongBtn.style.display = 'inline-block';
-        document.querySelector('.music-wave').classList.remove('active');
-        playButton.querySelector('i').classList.remove('fa-pause');
-        playButton.querySelector('i').classList.add('fa-play');
+        updateMusicWaveState(false);
+        updatePlayButtonState(false);
     });
     
     nextSongBtn.addEventListener('click', function() {
         guessForm.reset();
         feedbackContainer.innerHTML = '';
         
-        // Update round counter (TODO: change scoring scheme??)
+        // Move to next song
+        moveToNextSong();
+        
+        // Update round counter
         const currentRound = parseInt(document.getElementById('current-round').textContent);
         if (currentRound < 10) {
             document.getElementById('current-round').textContent = currentRound + 1;
@@ -125,7 +212,9 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('artist-score').textContent = Math.floor(Math.random() * 11);
         }
         
-        playButton.disabled = false;
+        // Reset timer and UI state
+        resetTimer();
+        updatePlayButtonState(false);
         nextSongBtn.style.display = 'none';
     });
     
@@ -138,21 +227,20 @@ document.addEventListener('DOMContentLoaded', function() {
         feedbackContainer.innerHTML = '';
     });
     
-    // TODO: change song and artist to actual data from the backend
     function timeUp() {
+        const currentSong = getCurrentSong();
         feedbackContainer.innerHTML = `
             <div class="feedback incorrect">
                 <h3>Time's Up!</h3>
                 <p>The correct answer was:</p>
-                <p>Song title: "Sample Song Title"</p>
-                <p>Artist: Sample Artist</p>
+                <p>Song title: "${currentSong.track.name}"</p>
+                <p>Artist: ${currentSong.track.artists[0].name}</p>
             </div>
         `;
         
         nextSongBtn.style.display = 'inline-block';
-        document.querySelector('.music-wave').classList.remove('active');
-        playButton.querySelector('i').classList.remove('fa-pause');
-        playButton.querySelector('i').classList.add('fa-play');
+        updateMusicWaveState(false);
+        updatePlayButtonState(false);
     }
 
     window.onSpotifyWebPlaybackSDKReady = () => {
@@ -276,13 +364,19 @@ document.addEventListener('DOMContentLoaded', function() {
             button.textContent = 'Playing...';
             button.classList.remove('loading');
 
-            // Set a timer to stop after 5 seconds
+            // Set a timer to stop after 10 seconds
             currentPlayTimer = setTimeout(async () => {
                 await player.pause();
                 button.disabled = false;
                 button.textContent = 'Play';
                 button.classList.remove('loading');
                 currentlyPlayingButton = null;
+                
+                // Stop the countdown and show time up
+                clearInterval(timerInterval);
+                timeLeft = 0;
+                timerDisplay.textContent = timeLeft;
+                timeUp();
             }, 10000);
 
         } catch (error) {

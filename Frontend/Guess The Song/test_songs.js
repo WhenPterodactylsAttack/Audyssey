@@ -2,32 +2,48 @@
 const testSongs = [
     {
         track: {
-            name: "SKINNY",
+            name: "Don't Stop Me Now",
             artists: [
                 {
-                    name: "Billie Elish"
+                    name: "Queen"
                 }
             ],
-            uri: "1CsMKhwEmNnmvHUuO5nryA",
-            album: {
-                name: "HIT ME HARD AND SOFT",
-
-            }
+            uri: "spotify:track:3lrNq7iGL5r3KS93YiKAbC",
         }
     },
     {
         track: {
-            name: "NISSAN ALTIMA",
+            name: "Alejandro",
             artists: [
                 {
-                    name: "Doechii"
+                    name: "Lady Gaga"
                 }
             ],
-            uri: "2dKkVF2m160z0RNDN2dddc",
-            album: {
-                name: "Alligator Bites Never Heal",
-            }
+            uri: "spotify:track:15pu8u4n3q4BKl4tF20c5v",
         }
-    }
+    },
+    {
+        track: {
+            name: "Nights",
+            artists: [
+                {
+                    name: "Frank Ocean"
+                }
+            ],
+            uri: "spotify:track:7eqoqGkKwgOaWNNHx90uEZ",
+        }
+    },
+    {
+        track: {
+            name: "Waterfalls",
+            artists: [
+                {
+                    name: "TLC"
+                }
+            ],
+            uri: "spotify:track:6qspW4YKycviDFjHBOaqUY",
+        }
+    },
+    
 ];
 
