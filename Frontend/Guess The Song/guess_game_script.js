@@ -1,6 +1,11 @@
 /** THIS IS PLACEHOLDER LOGIC @backend people */
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Add song start time tracking
+    let songStartTime = 0;
+    const MAX_POINTS_PER_SONG = 100;
+    const MAX_TIME_FOR_POINTS = 120; // seconds after which no points are awarded
+    
     // Log the test data
     console.log('Test Songs Data:', testSongs);
     
@@ -20,6 +25,10 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentlyPlayingButton = null;
     let isPlayerReady = false;
     let currentSongIndex = 0; // Track current song index
+    let totalTime = 120; // 2 minutes for the entire game
+
+    // Add variables at the top
+    let timerStarted = false; // Track if timer has been started
 
     // Function to get current song
     function getCurrentSong() {
@@ -29,7 +38,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to move to next song
     function moveToNextSong() {
         currentSongIndex = (currentSongIndex + 1) % testSongs.length;
-        return getCurrentSong();
+        const nextSong = getCurrentSong();
+
+        console.log('Next song:', nextSong.track.name);
+
+        // Optionally update any UI elements related to the song
+        // For example:
+        // document.getElementById('song-title-display').textContent = nextSong.track.name;
+        // document.getElementById('artist-display').textContent = nextSong.track.artists[0].name;
+
+        return nextSong;
     }
 
     function getHashParams() {
@@ -101,96 +119,114 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentSong = getCurrentSong();
         const testUri = currentSong.track.uri;
         
-        // Reset timer and UI state
-        resetTimer();
+        // Start the timer the first time a song is played
+        if (!timerStarted) {
+            startGameTimer();
+            timerStarted = true;
+        }
+        
         updatePlayButtonState(true);
         
         try {
-            // Start playing the song
+
             await playSong(testUri, playButton);
             
-            // music wave animation
             updateMusicWaveState(true);
-            
-            // Start countdown after a short delay to ensure music has started
-            setTimeout(() => {
-                // countdown
-                timerInterval = setInterval(function() {
-                    timeLeft--;
-                    timerDisplay.textContent = timeLeft;
-                    
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        timeUp();
-                    }
-                }, 1000);
-            }, 500); // Small delay to ensure music has started
         } catch (error) {
-            // If song fails to play, reset UI
+
             updatePlayButtonState(false);
             alert('Error playing song: ' + error.message);
         }
     });
     
     // Handle submit
-    guessForm.addEventListener('submit', function(e) {
+    guessForm.addEventListener('submit', async function (e) {
         e.preventDefault();
-        clearInterval(timerInterval);
-        
+
         const songTitle = document.getElementById('song-title').value.trim().toLowerCase();
         const songArtist = document.getElementById('song-artist').value.trim().toLowerCase();
         const currentSong = getCurrentSong();
-        
-        // Get correct answers
+
+ 
         const correctTitle = currentSong.track.name.toLowerCase();
         const correctArtist = currentSong.track.artists[0].name.toLowerCase();
-        
+
         // Check answers
         const titleCorrect = songTitle === correctTitle;
         const artistCorrect = songArtist === correctArtist;
+
+        // Calculate time-based points
+        const timeElapsed = (Date.now() - songStartTime) / 1000;
+        let pointsPerCorrectAnswer = Math.max(0, Math.floor(MAX_POINTS_PER_SONG - (timeElapsed / MAX_TIME_FOR_POINTS) * MAX_POINTS_PER_SONG));
         
+        console.log(`Time elapsed: ${timeElapsed.toFixed(2)}s, Points per correct answer: ${pointsPerCorrectAnswer}`);
+
         let feedback = '';
         let pointsEarned = 0;
-        
+
         if (titleCorrect || artistCorrect) {
-            // Build feedback message
             feedback = `
                 <div class="feedback ${titleCorrect && artistCorrect ? 'correct' : 'partial'}">
                     <h3>${titleCorrect && artistCorrect ? 'Correct!' : 'Partially Correct!'}</h3>
                     <p>Song title: "${currentSong.track.name}"</p>
                     <p>Artist: ${currentSong.track.artists[0].name}</p>
             `;
-            
-            // Add points feedback
+
             if (titleCorrect) {
-                pointsEarned += 1;
-                feedback += '<p>+1 point for the song title</p>';
+                pointsEarned += pointsPerCorrectAnswer;
+                feedback += `<p>+${pointsPerCorrectAnswer} points for the song title</p>`;
+                showPointIndicator(pointsPerCorrectAnswer);
             }
             if (artistCorrect) {
-                pointsEarned += 1;
-                feedback += '<p>+1 point for the artist</p>';
+                pointsEarned += pointsPerCorrectAnswer;
+                feedback += `<p>+${pointsPerCorrectAnswer} points for the artist</p>`;
+                showPointIndicator(pointsPerCorrectAnswer);
             }
-            
+
             feedback += '</div>';
         } else {
+            // Both title and artist are wrong - deduct 50 points
+            const penaltyPoints = 50;
+            const currentScore = parseInt(document.getElementById('current-score').textContent);
+            const newScore = Math.max(0, currentScore - penaltyPoints); // Don't go below zero
+            
+            document.getElementById('current-score').textContent = newScore;
+            showNegativePointIndicator(penaltyPoints); // Show penalty points
+            
             feedback = `
                 <div class="feedback incorrect">
                     <h3>Incorrect!</h3>
                     <p>The correct answer was:</p>
                     <p>Song title: "${currentSong.track.name}"</p>
                     <p>Artist: ${currentSong.track.artists[0].name}</p>
+                    <p class="penalty">-${penaltyPoints} points penalty</p>
                 </div>
             `;
+            
+            // Calculate points earned (-50 for wrong guess)
+            pointsEarned = -penaltyPoints;
         }
-        
-        // Update score
-        const currentScore = parseInt(document.getElementById('current-score').textContent);
-        document.getElementById('current-score').textContent = currentScore + pointsEarned;
-        
+
+        // Update score only if points were earned (not already handled in the else block)
+        if (pointsEarned > 0) {
+            const currentScore = parseInt(document.getElementById('current-score').textContent);
+            document.getElementById('current-score').textContent = currentScore + pointsEarned;
+        }
+
         feedbackContainer.innerHTML = feedback;
-        nextSongBtn.style.display = 'inline-block';
-        updateMusicWaveState(false);
-        updatePlayButtonState(false);
+
+        // Move to the next song
+        const nextSong = moveToNextSong();
+
+        // Reset the form for the next song
+        guessForm.reset();
+        setTimeout(() => {
+            feedbackContainer.innerHTML = '';
+        }, 2000);
+
+        // Start playing the next song
+        const playButton = document.getElementById('play-button');
+        await playSong(nextSong.track.uri, playButton);
     });
     
     nextSongBtn.addEventListener('click', function() {
@@ -363,33 +399,210 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update button to show playing state
             button.textContent = 'Playing...';
             button.classList.remove('loading');
-
-            // Set a timer to stop after 10 seconds
-            currentPlayTimer = setTimeout(async () => {
-                await player.pause();
-                button.disabled = false;
-                button.textContent = 'Play';
-                button.classList.remove('loading');
-                currentlyPlayingButton = null;
-                
-                // Stop the countdown and show time up
-                clearInterval(timerInterval);
-                timeLeft = 0;
-                timerDisplay.textContent = timeLeft;
-                timeUp();
-            }, 10000);
+            
+            // Record the time when song starts playing
+            songStartTime = Date.now();
+            console.log("Song started at: ", songStartTime);
 
         } catch (error) {
-            console.error('Error playing song:', error);
+            console.error('Error in playSong:', error);
             button.disabled = false;
             button.textContent = 'Play';
             button.classList.remove('loading');
             currentlyPlayingButton = null;
-            alert('Error playing song: ' + (error.message || 'Unknown error'));
         }
     }
 
+    // Updated point indicator function with random positioning
+    function showPointIndicator(points) {
+        console.log("Showing point indicator: +" + points);
+        
+        const pointIndicator = document.createElement('div');
+        pointIndicator.className = 'point-indicator';
+        pointIndicator.textContent = `+${points}`;
+        
+        // Style the indicator directly
+        pointIndicator.style.position = 'fixed';
+        pointIndicator.style.fontSize = '96px';
+        pointIndicator.style.fontWeight = 'bold';
+        pointIndicator.style.color = '#4caf50';
+        pointIndicator.style.zIndex = '9999';
+        pointIndicator.style.pointerEvents = 'none';
+        pointIndicator.style.textShadow = '3px 3px 6px rgba(0,0,0,0.7)';
+        
+        // Random positioning on the right side
+        const rightDistance = Math.floor(Math.random() * 100) + 20; // 20px to 120px from right
+        const verticalPosition = Math.floor(Math.random() * 60) + 20; // 20% to 80% from top
+        
+        pointIndicator.style.right = `${rightDistance}px`;
+        pointIndicator.style.top = `${verticalPosition}%`;
+        // Remove the transform since we're using percentage positioning
+        
+        pointIndicator.style.filter = 'drop-shadow(0 0 10px rgba(76, 175, 80, 0.7))';
+        
+        document.body.appendChild(pointIndicator);
+        
+        pointIndicator.style.animation = 'fadeOut 2s ease-out forwards';
+        
+        setTimeout(() => {
+            pointIndicator.remove();
+        }, 2000);
+    }
+
+    // Skip button functionality
+    const skipButton = document.getElementById('skip-button');
+
+    skipButton.addEventListener('click', async function() {
+        // Deduct points for skipping
+        const skipPenalty = 30;
+        const currentScore = parseInt(document.getElementById('current-score').textContent);
+        
+
+        const newScore = Math.max(0, currentScore - skipPenalty);
+        document.getElementById('current-score').textContent = newScore;
+        
+        // Show negative points indicator
+        showNegativePointIndicator(skipPenalty);
+        
+        // Show feedback
+        feedbackContainer.innerHTML = `
+            <div class="feedback skipped">
+                <h3>Song Skipped</h3>
+                <p>The song was: "${getCurrentSong().track.name}" by ${getCurrentSong().track.artists[0].name}</p>
+                <p>-${skipPenalty} points penalty</p>
+            </div>
+        `;
+
+        const nextSong = moveToNextSong();
+        
+
+        guessForm.reset();
+        setTimeout(() => {
+            feedbackContainer.innerHTML = '';
+        }, 2000);
+        
+        // Start playing the next song
+        await playSong(nextSong.track.uri, playButton);
+    });
 
 
+    function showNegativePointIndicator(points) {
+        console.log("Showing negative point indicator: -" + points);
+        
+        const pointIndicator = document.createElement('div');
+        pointIndicator.className = 'point-indicator negative';
+        pointIndicator.textContent = `-${points}`;
+        
 
+        pointIndicator.style.position = 'fixed';
+        pointIndicator.style.fontSize = '96px';
+        pointIndicator.style.fontWeight = 'bold';
+        pointIndicator.style.color = '#ff5252';
+        pointIndicator.style.zIndex = '9999';
+        pointIndicator.style.pointerEvents = 'none';
+        pointIndicator.style.textShadow = '3px 3px 6px rgba(0,0,0,0.7)';
+        
+
+        const rightDistance = Math.floor(Math.random() * 100) + 20;
+        const verticalPosition = Math.floor(Math.random() * 60) + 20;
+        
+        pointIndicator.style.right = `${rightDistance}px`;
+        pointIndicator.style.top = `${verticalPosition}%`;
+        
+        pointIndicator.style.filter = 'drop-shadow(0 0 10px rgba(255, 82, 82, 0.7))';
+        
+        document.body.appendChild(pointIndicator);
+        
+        pointIndicator.style.animation = 'fadeOut 2s ease-out forwards';
+        
+        setTimeout(() => {
+            pointIndicator.remove();
+        }, 2000);
+    }
+
+
+    function startGameTimer() {
+        const leftTimerElement = document.getElementById('left-timer');
+        let totalTimeSeconds = 120;
+        
+
+        updateTimerDisplay(totalTimeSeconds);
+        
+        // Start the countdown
+        timerInterval = setInterval(function() {
+            totalTimeSeconds--;
+            
+
+            updateTimerDisplay(totalTimeSeconds);
+            
+
+            if (totalTimeSeconds <= 30 && totalTimeSeconds > 10) {
+                leftTimerElement.classList.add('timer-warning');
+            } else if (totalTimeSeconds <= 10) {
+                leftTimerElement.classList.remove('timer-warning');
+                leftTimerElement.classList.add('timer-danger');
+            }
+            
+
+            if (totalTimeSeconds <= 0) {
+                clearInterval(timerInterval);
+                leftTimerElement.classList.add('timer-finished');
+                gameOver()
+            }
+        }, 1000);
+    }
+
+
+    function updateTimerDisplay(totalSeconds) {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        document.getElementById('left-timer').textContent = 
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+
+    function gameOver() {
+
+        if (player) {
+            player.pause().then(() => {
+                console.log('Playback stopped due to game ending');
+            }).catch(error => {
+                console.error('Error stopping playback:', error);
+            });
+        }
+        
+
+        if (currentlyPlayingButton) {
+            currentlyPlayingButton.disabled = true;
+            currentlyPlayingButton.textContent = 'Play';
+            currentlyPlayingButton.classList.remove('loading');
+        }
+        
+        // Stop music wave animation
+        const musicWave = document.querySelector('.music-wave');
+        if (musicWave) {
+            musicWave.classList.remove('active');
+        }
+        
+        document.getElementById('song-title').disabled = true;
+        document.getElementById('song-artist').disabled = true;
+        document.getElementById('submit-button').disabled = true;
+        document.getElementById('skip-button').disabled = true;
+        document.getElementById('play-button').disabled = true;
+        
+        // Show game over message
+        feedbackContainer.innerHTML = `
+            <div class="feedback game-over">
+                <h3>Game Over!</h3>
+                <p>Time's up! You've earned ${document.getElementById('current-score').textContent} points.</p>
+            </div>
+        `;
+        
+        // Show finish modal with final score
+        document.getElementById('finish-modal').style.display = 'flex';
+        document.getElementById('final-score').textContent = document.getElementById('current-score').textContent;
+    }
+
+    // Add CSS for game-over feedback
 });
+

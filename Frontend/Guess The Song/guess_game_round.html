@@ -36,61 +36,79 @@
             </nav>
 
             <main class="game-round-container">
-                <div class="game-round">
-                    <div class="music-player">
-                        <div class="music-visualization">
-                            <div class="music-wave">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-                        </div>
-                        <div class="music-controls">
-                            <button id="play-button" class="btn-play">
-                                <i class="fas fa-play"></i>
-                            </button>
-                            <div class="timer" id="timer">10</div>
-                        </div>
+                <!-- Timer at the top -->
+                <div id="top-timer-container">
+                    <div class="timer-wrapper">
+                        <div id="left-timer">02:00</div>
+                        <div class="timer-label">TIME LEFT</div>
                     </div>
-
-                    <div class="guess-container">
-                        <form id="guess-form">
-                            <div class="form-group">
-                                <label for="song-title">Song Title:</label>
-                                <input
-                                    type="text"
-                                    id="song-title"
-                                    placeholder="Enter song title..."
-                                    autocomplete="off"
-                                />
-                            </div>
-                            <div class="form-group">
-                                <label for="song-artist"
-                                    >Artist (Optional):</label
-                                >
-                                <input
-                                    type="text"
-                                    id="song-artist"
-                                    placeholder="Enter artist name..."
-                                    autocomplete="off"
-                                />
-                            </div>
-                            <button
-                                type="submit"
-                                class="btn btn-primary btn-large"
-                                id="submit-button"
-                            >
-                                Submit Guess
-                            </button>
-                        </form>
-                    </div>
-
+                </div>
+                
+                
+                <div class="game-content-wrapper">
+                    
                     <div class="feedback-container" id="feedback-container">
-                        <!-- Feedback here -->
+                        <!-- Feedback will appear here -->
+                    </div>
+                    
+                    <!-- Main game content -->
+                    <div class="game-round">
+                        <div class="music-player">
+                            <div class="music-visualization">
+                                <div class="music-wave">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                            <div class="music-controls">
+                                <button id="play-button" class="btn-play">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                
+                            </div>
+                        </div>
+
+                        <div class="guess-container">
+                            <form id="guess-form">
+                                <div class="form-group">
+                                    <label for="song-title">Song Title:</label>
+                                    <input
+                                        type="text"
+                                        id="song-title"
+                                        placeholder="Enter song title..."
+                                        autocomplete="off"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label for="song-artist"
+                                        >Artist (Optional):</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="song-artist"
+                                        placeholder="Enter artist name..."
+                                        autocomplete="off"
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary btn-large"
+                                    id="submit-button"
+                                >
+                                    Submit Guess
+                                </button>
+                            </form>
+                            
+                            <!-- Moved and restyled skip button -->
+                            <button id="skip-button" class="btn btn-warning btn-large" title="Skip this song (-30 points)">
+                                <i class="fas fa-forward"></i> Skip (-30 pts)
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -108,6 +126,7 @@
                     </button>
                 </div>
 
+
                 <!-- Finish -->
                 <div id="finish-modal" class="game-finish-modal">
                     <div class="modal-content">
@@ -115,14 +134,8 @@
                         <div class="final-score">
                             <p>
                                 Your final score:
-                                <span id="final-score">0</span>/20
+                                <span id="final-score">0</span>
                             </p>
-                        </div>
-                        <div class="score-breakdown">
-                            <p>
-                                Song titles: <span id="title-score">0</span>/10
-                            </p>
-                            <p>Artists: <span id="artist-score">0</span>/10</p>
                         </div>
                         <div class="modal-actions">
                             <button id="play-again" class="btn btn-secondary">
