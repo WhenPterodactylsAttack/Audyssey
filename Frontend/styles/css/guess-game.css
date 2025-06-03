@@ -723,6 +723,7 @@
 
 .feedback.skipped h3 {
     color: #ffeb3b;
+}
 
 
 @keyframes fadeInOut {
@@ -764,6 +765,7 @@
     font-weight: bold;
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
     color: #ffeb3b; 
+}
 
 .feedback.skipped .penalty {
     color: #ff6b6b;
@@ -816,6 +818,3 @@
     text-shadow: 0 0 5px rgba(255, 82, 82, 0.5);
 }
 
-.timer-finished {
-    animation: none !important;
-}

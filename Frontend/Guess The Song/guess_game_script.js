@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add song start time tracking
     let songStartTime = 0;
     const MAX_POINTS_PER_SONG = 100;
-    const MAX_TIME_FOR_POINTS = 120; // seconds after which no points are awarded
+    const MAX_TIME_FOR_POINTS = 120;    
     
     // Log the test data
     console.log('Test Songs Data:', testSongs);
@@ -24,29 +24,43 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentPlayTimer = null;
     let currentlyPlayingButton = null;
     let isPlayerReady = false;
-    let currentSongIndex = 0; // Track current song index
+    let currentSongIndex = 0; 
     let totalTime = 120; // 2 minutes for the entire game
 
-    // Add variables at the top
-    let timerStarted = false; // Track if timer has been started
-
+    let timerStarted = false; 
+    let playedSongs = []; 
+    
+    // Pick a random song to start with instead of always starting with the first one
+    // Initialize with a random song instead of always starting with index 0
+    currentSongIndex = Math.floor(Math.random() * testSongs.length);
+    console.log('Starting with random song:', testSongs[currentSongIndex].track.name);
+    
     // Function to get current song
     function getCurrentSong() {
         return testSongs[currentSongIndex];
     }
 
-    // Function to move to next song
+    
     function moveToNextSong() {
-        currentSongIndex = (currentSongIndex + 1) % testSongs.length;
+        
+        if (!playedSongs.includes(currentSongIndex)) {
+            playedSongs.push(currentSongIndex);
+        }
+        
+        if (playedSongs.length >= testSongs.length) {
+            console.log('All songs have been played. Resetting played songs list.');
+            playedSongs = [];
+        }
+        
+        const availableSongs = testSongs.map((_, index) => index)
+            .filter(index => !playedSongs.includes(index));
+        
+        const randomIndex = Math.floor(Math.random() * availableSongs.length);
+        currentSongIndex = availableSongs[randomIndex];
+        
         const nextSong = getCurrentSong();
-
-        console.log('Next song:', nextSong.track.name);
-
-        // Optionally update any UI elements related to the song
-        // For example:
-        // document.getElementById('song-title-display').textContent = nextSong.track.name;
-        // document.getElementById('artist-display').textContent = nextSong.track.artists[0].name;
-
+        console.log('Selected random song:', nextSong.track.name);
+        
         return nextSong;
     }
 
@@ -68,8 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Access token received:', access_token);
     } else {
         console.log('No access token found');
-        // Optionally redirect to login
-        // window.location.href = '/login';
     }
     
     // Function to update play button state
@@ -523,19 +535,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function startGameTimer() {
         const leftTimerElement = document.getElementById('left-timer');
-        let totalTimeSeconds = 120;
+        let totalTimeSeconds = 120; // 2 minutes
         
-
         updateTimerDisplay(totalTimeSeconds);
         
         // Start the countdown
         timerInterval = setInterval(function() {
             totalTimeSeconds--;
-            
-
             updateTimerDisplay(totalTimeSeconds);
             
-
+            // Add warning classes for time states
             if (totalTimeSeconds <= 30 && totalTimeSeconds > 10) {
                 leftTimerElement.classList.add('timer-warning');
             } else if (totalTimeSeconds <= 10) {
@@ -543,11 +552,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 leftTimerElement.classList.add('timer-danger');
             }
             
-
+            // Handle time's up
             if (totalTimeSeconds <= 0) {
                 clearInterval(timerInterval);
                 leftTimerElement.classList.add('timer-finished');
-                gameOver()
+                gameOver();
             }
         }, 1000);
     }
