@@ -267,12 +267,39 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Play again button (may need to change logic based on actual game flow and backend)
-    document.getElementById('play-again').addEventListener('click', function() {
+    document.getElementById('play-again').addEventListener('click', async function() {
         document.getElementById('finish-modal').style.display = 'none';
         document.getElementById('current-round').textContent = '1';
         document.getElementById('current-score').textContent = '0';
         guessForm.reset();
         feedbackContainer.innerHTML = '';
+
+        document.getElementById('song-title').disabled = false;
+        document.getElementById('song-artist').disabled = false;
+        document.getElementById('submit-button').disabled = false;
+        document.getElementById('skip-button').disabled = false;
+        document.getElementById('play-button').disabled = false;
+
+        // Reset visual classes on timer
+        const leftTimerElement = document.getElementById('left-timer');
+        leftTimerElement.classList.remove('timer-warning', 'timer-danger', 'timer-finished');
+
+        // Reset state variables
+        playedSongs = [];
+        timerStarted = false;
+        clearInterval(timerInterval);
+        totalTime = 120;
+
+        // Pick a new random starting song
+        currentSongIndex = Math.floor(Math.random() * testSongs.length);
+        const newSong = getCurrentSong();
+        console.log('Restarting with song:', newSong.track.name);
+
+        // Restart timer
+        startGameTimer();
+
+        // Auto-start first song again (optional)
+        await playSong(newSong.track.uri, playButton);
     });
     
     function timeUp() {
