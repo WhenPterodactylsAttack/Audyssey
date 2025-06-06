@@ -142,6 +142,23 @@
           }, false);
         }
       })();
+
+      const hash = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+
+      const userInfo = {
+        access_token: params.get('access_token'),
+        refresh_token: params.get('refresh_token'),
+        id: params.get('id'),
+        name: params.get('display_name'),
+        email: params.get('email'),
+        spotify_id: params.get('spotify_id'),
+        picture: params.get('picture'),
+      };
+
+      // Save to localStorage
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
+      console.log("Saved user:", userInfo);
     </script>
   </body>
 </html>

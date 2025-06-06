@@ -13,6 +13,22 @@ const UserSchema = new mongoose.Schema({
   country: String,
   profile_url: String,
   followers: Number,
+
+  finish_lyrics_score: {
+    type: Number,
+
+  },
+
+  guess_the_song_score: {
+    type: Number,
+
+  },
+
+  jeopardy_score: {
+    type: Number,
+
+  }
+
 });
 
 module.exports = mongoose.model('User', UserSchema);

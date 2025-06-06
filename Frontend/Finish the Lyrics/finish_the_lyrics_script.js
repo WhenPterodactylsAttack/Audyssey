@@ -1,4 +1,4 @@
-// lyrics data, {} indicate missing word
+
 const lyricsData = [
     {
         songTitle: "Shape of You",
@@ -31,6 +31,36 @@ const lyricsData = [
         answer: "lights"
     }
 ];
+
+// Parse and store user info from URL hash on first load
+(function () {
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const access_token = hashParams.get("access_token");
+    const refresh_token = hashParams.get("refresh_token");
+    const display_name = hashParams.get("display_name");
+    const email = hashParams.get("email");
+    const picture = hashParams.get("picture");
+    const spotify_id = hashParams.get("spotify_id");
+
+    if (access_token && spotify_id) {
+        const userInfo = {
+            access_token,
+            refresh_token,
+            display_name,
+            email,
+            picture,
+            spotify_id,
+            _id: spotify_id // to match the backend's expected field
+        };
+
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
+        console.log("✅ User info saved to localStorage:", userInfo);
+
+        // Remove hash from URL to clean things up
+        window.history.replaceState(null, null, window.location.pathname);
+    }
+})();
+
 
 // game vars
 let currentRound = 0;
@@ -184,6 +214,35 @@ function endGame() {
     document.getElementById('finish-modal').style.display = 'flex';
     document.getElementById('final-score').textContent = score;
     document.getElementById('correct-count').textContent = score;
+
+
+     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    console.log("This is userinfo:", userInfo);
+
+    if (userInfo && userInfo.id) {
+        fetch('http://localhost:5001/api/update-score', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: userInfo.id,
+                userEmail: userInfo.email,
+                score: score
+            }),
+
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('Score update response:', data);
+        })
+        .catch(err => {
+            console.error('Error updating score:', err);
+        });
+    }
+    
+
+
 }
 
 // random order for now, but using API, we can get random songs in some genre instead
@@ -235,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Load user info from localStorage and set the account image
 document.addEventListener("DOMContentLoaded", function() {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    console.log(userInfo);
     if (userInfo && userInfo.picture) {
         document.getElementById("account-image").src = userInfo.picture;
     }

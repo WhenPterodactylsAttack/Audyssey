@@ -21,6 +21,8 @@ var redirect_uri = process.env.REDIRECT_URI;
 
 const User = require('./models/User');
 
+
+
 const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost:27017/Audyssey', {
@@ -48,6 +50,8 @@ var generateRandomString = function(length) {
 var stateKey = 'spotify_auth_state';
 
 var app = express();
+// allow requests from anywhere (or specify origin)
+app.use(cors()); 
 
 // Serve static files from Frontend directory and all its subdirectories
 app.use(express.static(path.join(__dirname, '..', 'Frontend'), {
@@ -139,6 +143,9 @@ async function saveUserToDB(authData, userInfo) {
       country: userInfo.country,
       profile_url: userInfo.external_urls.spotify,
       followers: userInfo.followers.total,
+      finish_lyrics_score: userInfo.finish_lyrics_score,
+      guess_the_song_score: userInfo.guess_the_song_score,
+      jeopardy_score: userInfo.jeopardy_score,
     },
     { upsert: true, new: true }
   );
@@ -192,10 +199,18 @@ app.get('/callback', function(req, res) {
         }
 
         // Send tokens to frontend after DB save
-        res.redirect('/#' + querystring.stringify({
-          access_token,
-          refresh_token
-        }));
+        res.redirect(
+          '/#' +
+            querystring.stringify({
+              access_token,
+              refresh_token,
+              display_name: userInfo.display_name,
+              email: userInfo.email,
+              id: userInfo.id,
+              picture: userInfo.images[0]?.url,
+              spotify_id: userInfo.id,
+            })
+        );
       });
 
     } else {
