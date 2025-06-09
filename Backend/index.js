@@ -398,4 +398,12 @@ app.get('/top-tracks', function(req, res) {
   });
 });
 
-app.listen(process.env.PORT || 5000);
+// Add this at the end of the file
+module.exports = app;
+
+// Only start the server if this file is run directly
+if (require.main === module) {
+  app.listen(process.env.PORT || 5000, () => {
+    console.log('Server running on port', process.env.PORT || 5000);
+  });
+}
