@@ -50,5 +50,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function logout() {
     localStorage.removeItem("spotifyAuthInfo");
-    window.location.href = "welcome.html";
+    window.location.href = "index.html";
 }
