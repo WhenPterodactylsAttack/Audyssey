@@ -724,3 +724,27 @@ footer .footer-bottom p {
   background: #222;
   vertical-align: middle;
 }
+
+.btn-spotify {
+  background-color: #1db954;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-spotify:hover {
+  background-color: #1ed760;
+}
+
+.spotify-login {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.spotify-login .btn-spotify {
+  width: 100%;
+}

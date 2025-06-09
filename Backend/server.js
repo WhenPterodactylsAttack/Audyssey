@@ -1,10 +1,24 @@
 const express = require('express');
 var cors = require('cors');
 const User = require('./models/User');
+
+const PORT = 5001;
 const app = express();
 
-app.use(cors()); 
+app.listen(PORT, () => {
+  console.log(`Backend server is LIVE on http://localhost:${PORT}`);
+});const express = require('express');
+
+
+// Enable CORS for all routes
+app.use(cors({
+    origin: 'http://127.0.0.1:5501', // Your frontend URL
+    credentials: true // This is important for cookies/sessions
+}));
+
 app.use(express.json());
+
+
 
 const mongoose = require('mongoose');
 
@@ -57,8 +71,5 @@ app.post('/api/update-score', async (req, res) => {
     }
 });
 
-const PORT = 5001;
 
-app.listen(PORT, () => {
-  console.log(`Backend server is LIVE on http://localhost:${PORT}`);
-});
+// ... existing code ... 
