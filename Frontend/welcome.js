@@ -6,7 +6,62 @@ document.addEventListener('DOMContentLoaded', function() {
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
     const getStartedBtn = document.querySelector('.hero-content .btn-large');
+    const spotifyBtn = document.querySelector('.btn-spotify');
     
+
+
+    // Function to handle Spotify login
+    function handleSpotifyLogin() {
+        // Check if we're returning from Spotify auth with a token
+        const hash = window.location.hash.substring(1);
+        console.log("Hash from URL:", hash); // Debug log
+        const hashParams = new URLSearchParams(hash);
+        const access_token = hashParams.get('access_token');
+        console.log("Access token found:", access_token); // Debug log
+        
+        if (access_token) {
+            // If we have a token, redirect to games page with the token in the hash
+            const redirectUrl = `games.html${window.location.hash}`;
+            console.log("Redirecting to:", redirectUrl); // Debug log
+            window.location.href = redirectUrl;
+        } else {
+            // If no token, redirect to backend login
+            window.location.href = 'http://127.0.0.1:5000/login';
+        }
+    }
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', function() {
+        const hash = window.location.hash.substring(1);
+        console.log("Hash changed to:", hash); // Debug log
+        const hashParams = new URLSearchParams(hash);
+        const access_token = hashParams.get('access_token');
+        console.log("Access token from hash change:", access_token); // Debug log
+        
+        if (access_token) {
+            const redirectUrl = `games.html${window.location.hash}`;
+            console.log("Redirecting to:", redirectUrl); // Debug log
+            window.location.href = redirectUrl;
+        }
+    });
+
+    spotifyBtn.addEventListener('click', function() {
+        handleSpotifyLogin();
+    });
+
+    // Check for token on initial page load
+    const initialHash = window.location.hash.substring(1);
+    console.log("Initial hash:", initialHash); // Debug log
+    const initialParams = new URLSearchParams(initialHash);
+    const initialToken = initialParams.get('access_token');
+    console.log("Initial token:", initialToken); // Debug log
+    
+    if (initialToken) {
+        const redirectUrl = `games.html${window.location.hash}`;
+        console.log("Redirecting to:", redirectUrl); // Debug log
+        window.location.href = redirectUrl;
+    }
+
     // login tab modal
     loginBtn.addEventListener('click', function() {
         modal.style.display = 'flex';

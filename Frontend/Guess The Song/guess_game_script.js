@@ -1,6 +1,17 @@
 /** THIS IS PLACEHOLDER LOGIC @backend people */
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Get access token directly from localStorage
+    let spotifyInfo = JSON.parse(localStorage.getItem("spotifyAuthInfo"));
+    const access_token = spotifyInfo["access_token"];
+    console.log("Spotify Access Token in game round:", access_token);
+
+    if (!access_token) {
+        console.error("No access token found in localStorage");
+        // Optionally redirect back to login if no token found
+        // window.location.href = "../games.html";
+    }
+
     // Add song start time tracking
     let songStartTime = 0;
     const MAX_POINTS_PER_SONG = 100;
@@ -18,7 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let timerInterval;
     let timeLeft = 10;
-    let access_token = null;
     let player;
     let deviceId;
     let currentPlayTimer = null;
@@ -75,15 +85,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return hashParams;
     }
 
-    // Get access token when page loads
-    const params = getHashParams();
-    if (params.access_token) {
-        access_token = params.access_token;
-        console.log('Access token received:', access_token);
-    } else {
-        console.log('No access token found');
-    }
-    
     // Function to update play button state
     function updatePlayButtonState(isPlaying) {
         if (playButton) {
