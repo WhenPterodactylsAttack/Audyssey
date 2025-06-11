@@ -1,5 +1,4 @@
 {
-  "author": "Tommy Geiger",
   "name": "spotify-webapi",
   "version": "0.0.1",
   "description": "Spotify Web API application",
@@ -19,8 +18,7 @@
     "request": "~2.83.0"
   },
   "repository": {
-    "type": "git",
-    "url": "https://github.com/tommygeiger/spotify-webapi"
+    "type": "git"
   },
   "license": "MIT"
 }
