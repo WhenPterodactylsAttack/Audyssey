@@ -1,5 +1,35 @@
 /** THIS IS PLACEHOLDER LOGIC - Backend integration will be implemented later */
 
+(function () {
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const access_token = hashParams.get("access_token");
+    const refresh_token = hashParams.get("refresh_token");
+    const display_name = hashParams.get("display_name");
+    const email = hashParams.get("email");
+    const picture = hashParams.get("picture");
+    const spotify_id = hashParams.get("spotify_id");
+
+    if (access_token && spotify_id) {
+        const userInfo = {
+            access_token,
+            refresh_token,
+            display_name,
+            email,
+            picture,
+            spotify_id,
+            _id: spotify_id // to match the backend's expected field
+        };
+
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
+        console.log("✅ User info saved to localStorage:", userInfo);
+
+        // Remove hash from URL to clean things up
+        window.history.replaceState(null, null, window.location.pathname);
+    }
+})();
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     let currentScore = 0;
     let questionsRemaining = 25;
@@ -95,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentScoreDisplay.textContent = currentScore;
         questionsRemainingDisplay.textContent = questionsRemaining;
         createJeopardyBoard();
+        updateHighScore();
     }
     
     // jeopardy board creation
@@ -259,6 +290,40 @@ document.addEventListener('DOMContentLoaded', function() {
         currentScore += points;
         currentScoreDisplay.textContent = currentScore;
     }
+
+    // 🔁 Reusable helper to safely fetch scores
+async function getGameScore(spotifyId){
+    try{
+        const res = await fetch(`http://localhost:5001/api/get_user_scores/${spotifyId}`);
+        const scores = await res.json();
+        console.log("user scores from api: ", scores);
+        return scores;
+    }
+     catch (err) {
+    console.error("Failed to fetch user scores", err);
+            return {
+            finish_lyrics_score: 0,
+            guess_the_song_score: 0,
+            jeopardy_score: 0
+        };
+  }
+}
+
+// 🧠 High score updater function
+async function updateHighScore() {
+
+    let user = JSON.parse(localStorage.getItem('userInfo'));
+
+    let userId = user.spotify_id;
+    console.log("This is userid in update highscore: ", userId);
+
+    const scores = await getGameScore(userId);
+
+    let jeopardy_high_score = document.getElementById('jeopardy-current-high-score');
+    jeopardy_high_score.textContent = scores.jeopardy_score;
+
+}
+
     
     function checkGameOver() {
         if (questionsRemaining <= 0) {
@@ -279,6 +344,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 gameOverModal.classList.add('show');
                 continueBtn.removeEventListener('click', showGameOver);
             }, { once: true });
+
+            let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+            console.log("This is userinfo:", userInfo);
+
+            if (userInfo && userInfo.id) {
+                fetch('http://localhost:5001/api/update-score', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: userInfo.id,
+                        userEmail: userInfo.email,
+                        jeopardy_score: currentScore
+                    }),
+
+                })
+                .then(res => res.json())
+                .then(data => {
+                    console.log('Score update response:', data);
+                })
+                .catch(err => {
+                    console.error('Error updating score:', err);
+                });
+            }
+
+
+
         }
     }
     
