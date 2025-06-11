@@ -125,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentScoreDisplay.textContent = currentScore;
         questionsRemainingDisplay.textContent = questionsRemaining;
         createJeopardyBoard();
+        updateHighScore();
     }
     
     // jeopardy board creation
@@ -289,6 +290,40 @@ document.addEventListener('DOMContentLoaded', function() {
         currentScore += points;
         currentScoreDisplay.textContent = currentScore;
     }
+
+    // 🔁 Reusable helper to safely fetch scores
+async function getGameScore(spotifyId){
+    try{
+        const res = await fetch(`http://localhost:5001/api/get_user_scores/${spotifyId}`);
+        const scores = await res.json();
+        console.log("user scores from api: ", scores);
+        return scores;
+    }
+     catch (err) {
+    console.error("Failed to fetch user scores", err);
+            return {
+            finish_lyrics_score: 0,
+            guess_the_song_score: 0,
+            jeopardy_score: 0
+        };
+  }
+}
+
+// 🧠 High score updater function
+async function updateHighScore() {
+
+    let user = JSON.parse(localStorage.getItem('userInfo'));
+
+    let userId = user.spotify_id;
+    console.log("This is userid in update highscore: ", userId);
+
+    const scores = await getGameScore(userId);
+
+    let jeopardy_high_score = document.getElementById('jeopardy-current-high-score');
+    jeopardy_high_score.textContent = scores.jeopardy_score;
+
+}
+
     
     function checkGameOver() {
         if (questionsRemaining <= 0) {

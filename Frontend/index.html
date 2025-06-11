@@ -167,4 +167,28 @@
                 </div>
         </div>
     </body>
+
+    <script>
+        const hash = window.location.hash.substring(1);
+        console.log("this is the hash: ", hash);
+      const params = new URLSearchParams(hash);
+
+      const userInfo = {
+        access_token: params.get('access_token'),
+        refresh_token: params.get('refresh_token'),
+        id: params.get('id'),
+        name: params.get('display_name'),
+        email: params.get('email'),
+        spotify_id: params.get('spotify_id'),
+        picture: params.get('picture'),
+        finish_lyrics_score: params.get('finish_lyrics_score'),
+        guess_the_song_score: params.get('guess_the_song_score'),
+        jeopardy_score: params.get('jeopardy_score'),
+      };
+
+      // Save to localStorage
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
+      console.log("Saved user:", userInfo);
+      
+    </script>
 </html>

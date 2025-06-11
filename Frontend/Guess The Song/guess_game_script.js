@@ -34,6 +34,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let spotifyInfo = JSON.parse(localStorage.getItem("spotifyAuthInfo"));
     const access_token = spotifyInfo["access_token"];
     console.log("Spotify Access Token in game round:", access_token);
+    updateHighScore();
+
+    
 
     if (!access_token) {
         console.error("No access token found in localStorage");
@@ -589,6 +592,39 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
     }
 
+// 🔁 Reusable helper to safely fetch scores
+async function getGameScore(spotifyId){
+    try{
+        const res = await fetch(`http://localhost:5001/api/get_user_scores/${spotifyId}`);
+        const scores = await res.json();
+        console.log("user scores from api: ", scores);
+        return scores;
+    }
+     catch (err) {
+    console.error("Failed to fetch user scores", err);
+            return {
+            finish_lyrics_score: 0,
+            guess_the_song_score: 0,
+            jeopardy_score: 0
+        };
+  }
+}
+
+// 🧠 High score updater function
+async function updateHighScore() {
+
+    let user = JSON.parse(localStorage.getItem('userInfo'));
+
+    let userId = user.spotify_id;
+    console.log("This is userid in update highscore: ", userId);
+
+    const scores = await getGameScore(userId);
+
+    let finish_lyrics_high_score = document.getElementById('current-high-score-guess-game');
+    finish_lyrics_high_score.textContent = scores.guess_the_song_score;
+
+}
+
 
     function startGameTimer() {
         const leftTimerElement = document.getElementById('left-timer');
@@ -625,6 +661,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('left-timer').textContent = 
             `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
+
+    
 
 
     function gameOver() {
@@ -668,9 +706,14 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('finish-modal').style.display = 'flex';
         document.getElementById('final-score').textContent = document.getElementById('current-score').textContent;
 
-        //convert final-score to an integer
-        let final_score = document.getElementById('final-score').textContent;
-        let final_score_int = parseInt(final_score);
+        let final_score = document.getElementById('final-score').textContent.trim();
+        let final_score_int = parseInt(final_score, 10);
+        console.log(final_score_int);
+
+        if (isNaN(final_score_int)) {
+            console.warn('final-score is not a valid number:', final_score);
+        }
+
 
         let userInfo = JSON.parse(localStorage.getItem("userInfo"));
         console.log("This is userinfo:", userInfo);
@@ -684,13 +727,16 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify({
                 userId: userInfo.id,
                 userEmail: userInfo.email,
-                guess_game_score: final_score_int
+                guess_the_song_score: final_score_int
             }),
 
         })
         .then(res => res.json())
         .then(data => {
             console.log('Score update response:', data);
+            updateHighScore();
+
+
         })
         .catch(err => {
             console.error('Error updating score:', err);
@@ -702,4 +748,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add CSS for game-over feedback
 });
+
 

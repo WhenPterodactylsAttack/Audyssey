@@ -35,12 +35,16 @@ const lyricsData = [
 // Parse and store user info from URL hash on first load
 (function () {
     const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    console.log("hash params ", hashParams);
     const access_token = hashParams.get("access_token");
     const refresh_token = hashParams.get("refresh_token");
     const display_name = hashParams.get("display_name");
     const email = hashParams.get("email");
     const picture = hashParams.get("picture");
     const spotify_id = hashParams.get("spotify_id");
+    const finish_lyrics_score = hashParams.get("finish_lyrics_score");
+    console.log("Finish lyrics score on frontend: ", finish_lyrics_score);
+
 
     if (access_token && spotify_id) {
         const userInfo = {
@@ -50,7 +54,8 @@ const lyricsData = [
             email,
             picture,
             spotify_id,
-            _id: spotify_id // to match the backend's expected field
+            _id: spotify_id, // to match the backend's expected field
+            finish_lyrics_score
         };
 
         localStorage.setItem("userInfo", JSON.stringify(userInfo));
@@ -71,12 +76,51 @@ let timeLeft = 10;
 // we can change this, other game has 10, maybe option to change num rounds?
 const totalRounds = 5;
 
+async function getGameScore(spotifyId){
+    try{
+        const res = await fetch(`http://localhost:5001/api/get_user_scores/${spotifyId}`);
+        const scores = await res.json();
+        console.log("user scores from api: ", score);
+        return scores;
+    }
+     catch (err) {
+    console.error("Failed to fetch user scores", err);
+            return {
+            finish_lyrics_score: 0,
+            guess_the_song_score: 0,
+            jeopardy_score: 0
+        };
+  }
+}
+
 // init game
-function startGame() {
+async function startGame() {
     currentRound = 0;
     score = 0;
     document.getElementById('current-score').textContent = '0';
     document.getElementById('current-round').textContent = '1';
+
+    let user = JSON.parse(localStorage.getItem('userInfo'));
+    
+    // Add null check for user
+    if (!user || !user.spotify_id) {
+        console.error("No user info found in localStorage");
+        document.getElementById('current-high-score').textContent = '0';
+        showRound();
+        return;
+    }
+    
+    let userId = user.spotify_id;
+
+    // Fixed: Properly await and handle the scores
+    const scores = await getGameScore(userId);
+    
+    // Fixed: Handle undefined scores gracefully
+    let finish_lyrics = String(scores.finish_lyrics_score);
+    console.log(finish_lyrics);
+
+    
+    document.getElementById('current-high-score').textContent = finish_lyrics;
     
     // Load first lyric
     showRound();
@@ -294,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Load user info from localStorage and set the account image
 document.addEventListener("DOMContentLoaded", function() {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    console.log(userInfo);
+    console.log("Finish the lyrics, getting user data: ", userInfo);
     if (userInfo && userInfo.picture) {
         document.getElementById("account-image").src = userInfo.picture;
     }

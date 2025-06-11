@@ -11,7 +11,8 @@
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         />
-        <script src="finish_the_lyrics_script.js" defer></script>
+        <script type="module" src="finish_the_lyrics_script.js" defer></script>
+
     </head>
     <body>
         <div class="app-container">
@@ -25,6 +26,9 @@
                     <h1>Audyssey</h1>
                 </div>
                 <div class="game-info">
+                    <div class = "high-score">
+                         High Score: <span id="current-high-score">0</span>
+                    </div>
                     <div class="score">
                         Score: <span id="current-score">0</span>
                     </div>
