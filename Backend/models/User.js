@@ -16,17 +16,19 @@ const UserSchema = new mongoose.Schema({
 
   finish_lyrics_score: {
     type: Number,
+    default: 0
 
   },
 
   guess_the_song_score: {
     type: Number,
+    default: 0
 
   },
 
   jeopardy_score: {
     type: Number,
-
+    default: 0
   }
 
 });

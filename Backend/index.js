@@ -150,6 +150,18 @@ async function saveUserToDB(authData, userInfo) {
     { upsert: true, new: true }
   );
   console.log('✅ User saved:', user);
+
+}
+
+
+async function getUserFromDB(spotifyId) {
+  try {
+    const user = await User.findOne({ spotify_id: spotifyId });
+    return user;
+  } catch (error) {
+    console.error("Error fetching user from DB:", error);
+    return null;
+  }
 }
 
 app.get('/callback', function(req, res) {
@@ -199,6 +211,7 @@ app.get('/callback', function(req, res) {
         }
 
         // Send tokens to frontend after DB save
+        const dbUser = await getUserFromDB(userInfo.id);
         res.redirect(
           '/#' +
             querystring.stringify({
@@ -209,6 +222,9 @@ app.get('/callback', function(req, res) {
               id: userInfo.id,
               picture: userInfo.images[0]?.url,
               spotify_id: userInfo.id,
+              finish_lyrics_score: dbUser?.finish_lyrics_score ?? 0,
+              guess_the_song_score: dbUser?.get_the_song_score,
+              jeopardy_score:dbUser?.jeopardy_score
             })
         );
       });

@@ -7,12 +7,12 @@ const app = express();
 
 app.listen(PORT, () => {
   console.log(`Backend server is LIVE on http://localhost:${PORT}`);
-});const express = require('express');
+});
 
 
 // Enable CORS for all routes
 app.use(cors({
-    origin: 'http://127.0.0.1:5501', // Your frontend URL
+    origin: ['http://localhost:5000', 'http://127.0.0.1:5000'],
     credentials: true // This is important for cookies/sessions
 }));
 
@@ -35,8 +35,9 @@ mongoose.connection.on('error', (err) => {
   console.error('❌ Mongoose connection error:', err);
 });
 
+
 app.post('/api/update-score', async (req, res) => {
-    const { jeopardy_score, guess_game_score, userEmail, userId, score } = req.body;
+    const { jeopardy_score, guess_the_song_score, userEmail, userId, score } = req.body;
     console.log('Received update-score:', req.body);
 
 
@@ -54,8 +55,8 @@ app.post('/api/update-score', async (req, res) => {
             await user.save();
         }
 
-        if (guess_game_score > user.guess_game_score){
-            user.guess_the_song_score = guess_game_score;
+        if (guess_the_song_score > user.guess_the_song_score){
+            user.guess_the_song_score = guess_the_song_score;
             await user.save();
         }
 
@@ -71,5 +72,27 @@ app.post('/api/update-score', async (req, res) => {
     }
 });
 
+app.get('/api/get_user_scores/:spotifyId', async (req, res) => {
+  const { spotifyId } = req.params;
+
+  try {
+    const user = await User.findOne({ spotify_id: spotifyId });
+    console.log("Getting this users game scores: ", user);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({
+      finish_lyrics_score: user.finish_lyrics_score,
+      guess_the_song_score: user.guess_the_song_score,
+      jeopardy_score: user.jeopardy_score
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 // ... existing code ... 
