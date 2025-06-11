@@ -1,0 +1,46 @@
+{
+  "name": "audyssey-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Audyssey music gaming application",
+  "main": "index.html",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"],
+    "testMatch": [
+      "**/__tests__/**/*.(js|jsx|ts|tsx)",
+      "**/*.(test|spec).(js|jsx|ts|tsx)"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "ts",
+      "tsx",
+      "json"
+    ],
+    "transform": {},
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/coverage/**",
+      "!jest.config.js",
+      "!jest.setup.js"
+    ]
+  },
+  "keywords": [
+    "music",
+    "games",
+    "responsive",
+    "web"
+  ],
+  "author": "",
+  "license": "MIT"
+}
