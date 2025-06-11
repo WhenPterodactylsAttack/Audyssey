@@ -1,10 +1,42 @@
 /** THIS IS PLACEHOLDER LOGIC @backend people */
 
+(function () {
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const access_token = hashParams.get("access_token");
+    const refresh_token = hashParams.get("refresh_token");
+    const display_name = hashParams.get("display_name");
+    const email = hashParams.get("email");
+    const picture = hashParams.get("picture");
+    const spotify_id = hashParams.get("spotify_id");
+
+    if (access_token && spotify_id) {
+        const userInfo = {
+            access_token,
+            refresh_token,
+            display_name,
+            email,
+            picture,
+            spotify_id,
+            _id: spotify_id // to match the backend's expected field
+        };
+
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
+        console.log("✅ User info saved to localStorage:", userInfo);
+
+        // Remove hash from URL to clean things up
+        window.history.replaceState(null, null, window.location.pathname);
+    }
+})();
+
+
 document.addEventListener('DOMContentLoaded', function() {
     // Get access token directly from localStorage
     let spotifyInfo = JSON.parse(localStorage.getItem("spotifyAuthInfo"));
     const access_token = spotifyInfo["access_token"];
     console.log("Spotify Access Token in game round:", access_token);
+    updateHighScore();
+
+    
 
     if (!access_token) {
         console.error("No access token found in localStorage");
@@ -560,6 +592,39 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
     }
 
+// 🔁 Reusable helper to safely fetch scores
+async function getGameScore(spotifyId){
+    try{
+        const res = await fetch(`http://localhost:5001/api/get_user_scores/${spotifyId}`);
+        const scores = await res.json();
+        console.log("user scores from api: ", scores);
+        return scores;
+    }
+     catch (err) {
+    console.error("Failed to fetch user scores", err);
+            return {
+            finish_lyrics_score: 0,
+            guess_the_song_score: 0,
+            jeopardy_score: 0
+        };
+  }
+}
+
+// 🧠 High score updater function
+async function updateHighScore() {
+
+    let user = JSON.parse(localStorage.getItem('userInfo'));
+
+    let userId = user.spotify_id;
+    console.log("This is userid in update highscore: ", userId);
+
+    const scores = await getGameScore(userId);
+
+    let finish_lyrics_high_score = document.getElementById('current-high-score-guess-game');
+    finish_lyrics_high_score.textContent = scores.guess_the_song_score;
+
+}
+
 
     function startGameTimer() {
         const leftTimerElement = document.getElementById('left-timer');
@@ -596,6 +661,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('left-timer').textContent = 
             `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
+
+    
 
 
     function gameOver() {
@@ -638,8 +705,48 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show finish modal with final score
         document.getElementById('finish-modal').style.display = 'flex';
         document.getElementById('final-score').textContent = document.getElementById('current-score').textContent;
+
+        let final_score = document.getElementById('final-score').textContent.trim();
+        let final_score_int = parseInt(final_score, 10);
+        console.log(final_score_int);
+
+        if (isNaN(final_score_int)) {
+            console.warn('final-score is not a valid number:', final_score);
+        }
+
+
+        let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        console.log("This is userinfo:", userInfo);
+
+    if (userInfo && userInfo.id) {
+        fetch('http://localhost:5001/api/update-score', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: userInfo.id,
+                userEmail: userInfo.email,
+                guess_the_song_score: final_score_int
+            }),
+
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('Score update response:', data);
+            updateHighScore();
+
+
+        })
+        .catch(err => {
+            console.error('Error updating score:', err);
+        });
+    }
+
+
     }
 
     // Add CSS for game-over feedback
 });
+
 
